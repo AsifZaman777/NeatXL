@@ -142,7 +142,7 @@ export default function Home() {
   const statistics = getStatistics();
 
   return (
-    <div className="max-w-4xl mx-auto w-full bg-gradient-to-br from-green-50 to-emerald-100 min-h-screen p-4">
+    <div className="max-w-6xl mx-auto w-full bg-gradient-to-br from-green-50 to-emerald-100 min-h-screen p-4">
       <div className="text-center mb-8">
         <div className="flex justify-center items-center mb-4">
           <h1 className="text-5xl font-bold text-green-800 mb-3">
