@@ -10,6 +10,7 @@ import { useAdContext } from '../components/ads/AdContext';
 
 export default function Home() {
   const [csvData, setCsvData] = useState<CSVData | null>(null);
+  const [reorderedData, setReorderedData] = useState<CSVData | null>(null);
   const [uploadedFileType, setUploadedFileType] = useState<'csv' | 'xlsx' | null>(null);
   const [processing, setProcessing] = useState(false);
   const [cleanOptions, setCleanOptions] = useState({
@@ -23,9 +24,49 @@ export default function Home() {
 
   const handleFileUpload = (data: CSVData, fileType?: 'csv' | 'xlsx') => {
     setCsvData(data);
+    setReorderedData(null); // Reset reordered data when new file is uploaded
     setUploadedFileType(fileType || 'csv');
     // Trigger ad on first upload
     triggerModalAd(true);
+  };
+
+  // Function to handle column reordering
+  const handleReorderColumns = (oldIndex: number, newIndex: number) => {
+    const currentData = reorderedData || csvData;
+    if (!currentData) return;
+
+    // Reorder headers
+    const newHeaders = [...currentData.headers];
+    const [movedHeader] = newHeaders.splice(oldIndex, 1);
+    newHeaders.splice(newIndex, 0, movedHeader);
+
+    // Reorder data columns
+    const newData = currentData.data.map(row => {
+      const newRow = [...row];
+      const [movedCell] = newRow.splice(oldIndex, 1);
+      newRow.splice(newIndex, 0, movedCell);
+      return newRow;
+    });
+
+    setReorderedData({
+      headers: newHeaders,
+      data: newData
+    });
+  };
+
+  // Function to handle row reordering
+  const handleReorderRows = (oldIndex: number, newIndex: number) => {
+    const currentData = reorderedData || csvData;
+    if (!currentData) return;
+
+    const newData = [...currentData.data];
+    const [movedRow] = newData.splice(oldIndex, 1);
+    newData.splice(newIndex, 0, movedRow);
+
+    setReorderedData({
+      headers: [...currentData.headers],
+      data: newData
+    });
   };
 
   // Clean data based on options
@@ -75,7 +116,8 @@ export default function Home() {
   };
 
   // Update preview instantly when options change
-  const cleanedCsvData = getCleanedData(csvData, cleanOptions);
+  const currentData = reorderedData || csvData;
+  const cleanedCsvData = getCleanedData(currentData, cleanOptions);
 
   const handleDownloadCSV = () => {
     if (!cleanedCsvData) return;
@@ -164,14 +206,34 @@ export default function Home() {
             <div className="p-6 bg-gradient-to-r from-green-50 to-emerald-50">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-bold text-green-800">📊 Data Spreadsheet</h2>
-                <button 
-                  onClick={() => setCsvData(null)}
-                  className="px-4 py-2 text-sm text-green-600 hover:text-green-800 font-medium bg-green-50 hover:bg-green-100 rounded-lg border border-green-300 transition-all"
-                >
-                  🔄 Upload New File
-                </button>
+                <div className="flex gap-2">
+                  {reorderedData && (
+                    <button 
+                      onClick={() => setReorderedData(null)}
+                      className="px-4 py-2 text-sm text-blue-600 hover:text-blue-800 font-medium bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-300 transition-all"
+                    >
+                      ↩️ Reset Order
+                    </button>
+                  )}
+                  <button 
+                    onClick={() => {
+                      setCsvData(null);
+                      setReorderedData(null);
+                    }}
+                    className="px-4 py-2 text-sm text-green-600 hover:text-green-800 font-medium bg-green-50 hover:bg-green-100 rounded-lg border border-green-300 transition-all"
+                  >
+                    🔄 Upload New File
+                  </button>
+                </div>
               </div>
-              <DataPreview data={cleanedCsvData || csvData} />
+              {(cleanedCsvData || currentData) && (
+                <DataPreview 
+                  data={cleanedCsvData || currentData!} 
+                  onReorderColumns={handleReorderColumns}
+                  onReorderRows={handleReorderRows}
+                  isDraggable={true}
+                />
+              )}
               
               {/* Statistics */}
               {statistics && (
