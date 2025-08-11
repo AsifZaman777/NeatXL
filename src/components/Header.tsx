@@ -43,7 +43,7 @@ export default function Header({ onNavigate, currentPage = 'home' }: HeaderProps
               <button 
                 onClick={() => handleNavigation('home')}
                 className={`px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 ${
-                  currentPage === 'home' 
+                  currentPage === '' 
                     ? 'text-emerald-700 bg-emerald-100 border-2 border-emerald-300' 
                     : 'text-green-600 hover:text-green-700 hover:bg-green-100 border-2 border-transparent hover:border-green-300'
                 }`}
