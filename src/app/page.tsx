@@ -19,36 +19,13 @@ export default function Home() {
     standardizeCase: false,
     removeSpecialChars: false
   });
-  const [history, setHistory] = useState<CSVData[]>([]);
-  const [historyIndex, setHistoryIndex] = useState(-1);
   const { triggerModalAd } = useAdContext();
 
   const handleFileUpload = (data: CSVData, fileType?: 'csv' | 'xlsx') => {
     setCsvData(data);
     setUploadedFileType(fileType || 'csv');
-    // Add to history for undo/redo
-    setHistory([data]);
-    setHistoryIndex(0);
     // Trigger ad on first upload
     triggerModalAd(true);
-  };
-
-  // Undo/Redo functions
-  const canUndo = historyIndex > 0;
-  const canRedo = historyIndex < history.length - 1;
-
-  const handleUndo = () => {
-    if (canUndo) {
-      setHistoryIndex(historyIndex - 1);
-      setCsvData(history[historyIndex - 1]);
-    }
-  };
-
-  const handleRedo = () => {
-    if (canRedo) {
-      setHistoryIndex(historyIndex + 1);
-      setCsvData(history[historyIndex + 1]);
-    }
   };
 
   // Clean data based on options
@@ -186,29 +163,13 @@ export default function Home() {
           <div className="divide-y divide-green-200">
             <div className="p-6 bg-gradient-to-r from-green-50 to-emerald-50">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-green-800">Data Preview</h2>
-                <div className="flex gap-2">
-                  <button
-                    onClick={handleUndo}
-                    disabled={!canUndo}
-                    className="px-4 py-2 text-sm bg-green-100 hover:bg-green-200 text-green-700 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-green-300"
-                  >
-                    ↶ Undo
-                  </button>
-                  <button
-                    onClick={handleRedo}
-                    disabled={!canRedo}
-                    className="px-4 py-2 text-sm bg-green-100 hover:bg-green-200 text-green-700 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-green-300"
-                  >
-                    ↷ Redo
-                  </button>
-                  <button 
-                    onClick={() => setCsvData(null)}
-                    className="px-4 py-2 text-sm text-green-600 hover:text-green-800 font-medium bg-green-50 hover:bg-green-100 rounded-lg border border-green-300 transition-all"
-                  >
-                    Upload Different File
-                  </button>
-                </div>
+                <h2 className="text-2xl font-bold text-green-800">📊 Data Spreadsheet</h2>
+                <button 
+                  onClick={() => setCsvData(null)}
+                  className="px-4 py-2 text-sm text-green-600 hover:text-green-800 font-medium bg-green-50 hover:bg-green-100 rounded-lg border border-green-300 transition-all"
+                >
+                  🔄 Upload New File
+                </button>
               </div>
               <DataPreview data={cleanedCsvData || csvData} />
               
