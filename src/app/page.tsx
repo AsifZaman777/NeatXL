@@ -48,31 +48,30 @@ export default function Home() {
   // Update preview instantly when options change
   const cleanedCsvData = getCleanedData(csvData, cleanOptions);
 
-  const handleDownload = () => {
-    if (!csvData || !uploadedFileType) return;
+  const handleDownloadCSV = () => {
+    if (!cleanedCsvData) return;
+    const csvContent = [
+      cleanedCsvData.headers.join(','),
+      ...cleanedCsvData.data.map((row: string[]) => row.join(','))
+    ].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'neatsheet-cleaned-data.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
-    if (uploadedFileType === 'csv') {
-      const csvContent = [
-        csvData.headers.join(','),
-        ...csvData.data.map((row: string[]) => row.join(','))
-      ].join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'neatsheet-cleaned-data.csv');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else if (uploadedFileType === 'xlsx') {
-      // Dynamically import xlsx for client-side export
-      import('xlsx').then(XLSX => {
-        const worksheet = XLSX.utils.aoa_to_sheet([csvData.headers, ...csvData.data]);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-        XLSX.writeFile(workbook, 'neatsheet-cleaned-data.xlsx');
-      });
-    }
+  const handleDownloadXLSX = () => {
+    if (!cleanedCsvData) return;
+    import('xlsx').then(XLSX => {
+      const worksheet = XLSX.utils.aoa_to_sheet([cleanedCsvData.headers, ...cleanedCsvData.data]);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+      XLSX.writeFile(workbook, 'neatsheet-cleaned-data.xlsx');
+    });
   };
 
   return (
@@ -114,23 +113,20 @@ export default function Home() {
               />
             </div>
 
-            <div className="p-6 bg-gray-50 flex justify-end">
+            <div className="p-6 bg-gray-50 flex justify-end gap-4">
               <button
-                onClick={handleDownload}
+                onClick={handleDownloadCSV}
                 disabled={processing}
                 className={`inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 ${processing ? 'opacity-70 cursor-not-allowed' : ''}`}
               >
-                {processing ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Processing...
-                  </>
-                ) : (
-                  'Download Cleaned CSV'
-                )}
+                Download as CSV
+              </button>
+              <button
+                onClick={handleDownloadXLSX}
+                disabled={processing}
+                className={`inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${processing ? 'opacity-70 cursor-not-allowed' : ''}`}
+              >
+                Download as XLSX
               </button>
             </div>
           </div>
