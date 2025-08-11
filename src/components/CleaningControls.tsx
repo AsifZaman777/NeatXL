@@ -4,25 +4,19 @@
 import { useState } from 'react';
 
 interface CleaningControlsProps {
-  onClean: (options: {
+  options: {
     removeDuplicates: boolean;
     trimWhitespace: boolean;
-  }) => Promise<void>;
+  };
+  setOptions: (opts: { removeDuplicates: boolean; trimWhitespace: boolean }) => void;
   processing: boolean;
 }
 
 export default function CleaningControls({ 
-  onClean,
+  options,
+  setOptions,
   processing
 }: CleaningControlsProps) {
-  const [options, setOptions] = useState({
-    removeDuplicates: true,
-    trimWhitespace: true
-  });
-
-  const handleClean = async () => {
-    await onClean(options);
-  };
 
   return (
     <div className="mt-6 p-6 bg-gray-50 rounded-lg border border-gray-200">
@@ -59,17 +53,7 @@ export default function CleaningControls({
           </label>
         </div>
 
-        <div className="pt-4">
-          <button
-            onClick={handleClean}
-            disabled={processing}
-            className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-              processing ? 'opacity-70 cursor-not-allowed' : ''
-            }`}
-          >
-            {processing ? 'Cleaning...' : 'Clean Data'}
-          </button>
-        </div>
+  {/* Cleaning happens instantly, no button needed */}
       </div>
     </div>
   );

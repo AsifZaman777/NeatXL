@@ -10,65 +10,69 @@ import { useAdContext } from '../components/ads/AdContext';
 
 export default function Home() {
   const [csvData, setCsvData] = useState<CSVData | null>(null);
+  const [uploadedFileType, setUploadedFileType] = useState<'csv' | 'xlsx' | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [cleanOptions, setCleanOptions] = useState({
+    removeDuplicates: true,
+    trimWhitespace: true
+  });
   const { triggerModalAd } = useAdContext();
 
-  const handleFileUpload = (data: CSVData) => {
+  const handleFileUpload = (data: CSVData, fileType?: 'csv' | 'xlsx') => {
     setCsvData(data);
+    setUploadedFileType(fileType || 'csv');
     // Trigger ad on first upload
     triggerModalAd(true);
   };
 
-  const handleClean = async (options: {
-    removeDuplicates: boolean;
-    trimWhitespace: boolean;
-  }) => {
-    if (!csvData) return;
-
-    setProcessing(true);
-    
-    // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    let cleanedData = [...csvData.data];
-    const cleanedHeaders = [...csvData.headers];
-
-    // Trim whitespace
+  // Clean data based on options
+  const getCleanedData = (data: CSVData | null, options: typeof cleanOptions): CSVData | null => {
+    if (!data) return null;
+    let cleanedData = [...data.data];
+    const cleanedHeaders = [...data.headers];
     if (options.trimWhitespace) {
-      cleanedData = cleanedData.map(row => 
+      cleanedData = cleanedData.map(row =>
         row.map((cell: string) => typeof cell === 'string' ? cell.trim() : cell)
       );
     }
-
-    // Remove duplicates
     if (options.removeDuplicates) {
       const uniqueRows = new Set(cleanedData.map(row => JSON.stringify(row)));
       cleanedData = Array.from(uniqueRows).map(row => JSON.parse(row));
     }
-
-    setCsvData({
+    return {
       headers: cleanedHeaders,
       data: cleanedData
-    });
-    setProcessing(false);
+    };
   };
 
+  // Update preview instantly when options change
+  const cleanedCsvData = getCleanedData(csvData, cleanOptions);
+
   const handleDownload = () => {
-    if (!csvData) return;
+    if (!csvData || !uploadedFileType) return;
 
-    const csvContent = [
-      csvData.headers.join(','),
-      ...csvData.data.map((row: string[]) => row.join(','))
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'neatsheet-cleaned-data.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (uploadedFileType === 'csv') {
+      const csvContent = [
+        csvData.headers.join(','),
+        ...csvData.data.map((row: string[]) => row.join(','))
+      ].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'neatsheet-cleaned-data.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (uploadedFileType === 'xlsx') {
+      // Dynamically import xlsx for client-side export
+      import('xlsx').then(XLSX => {
+        const worksheet = XLSX.utils.aoa_to_sheet([csvData.headers, ...csvData.data]);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        XLSX.writeFile(workbook, 'neatsheet-cleaned-data.xlsx');
+      });
+    }
   };
 
   return (
@@ -85,7 +89,7 @@ export default function Home() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         {!csvData ? (
           <div className="p-8">
-            <CSVUploader onUpload={handleFileUpload} />
+            <CSVUploader onUpload={(data, fileType) => handleFileUpload(data, fileType)} />
           </div>
         ) : (
           <div className="divide-y divide-gray-200">
@@ -99,12 +103,13 @@ export default function Home() {
                   Upload Different File
                 </button>
               </div>
-              <DataPreview data={csvData} />
+              <DataPreview data={cleanedCsvData || csvData} />
             </div>
 
             <div className="p-6">
               <CleaningControls 
-                onClean={handleClean}
+                options={cleanOptions}
+                setOptions={setCleanOptions}
                 processing={processing}
               />
             </div>
