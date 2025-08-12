@@ -19,7 +19,7 @@ export default function CSVUploader({ onUpload }: CSVUploaderProps) {
     const fileName = file.name.toLowerCase();
 
     if (fileName.endsWith('.csv')) {
-      Papa.parse(file, {
+      Papa.parse(file as any, {
         header: true,
         skipEmptyLines: true,
         complete: (results: ParseResult<Record<string, string>>) => {
@@ -29,10 +29,6 @@ export default function CSVUploader({ onUpload }: CSVUploaderProps) {
           );
           onUpload({ headers, data });
         },
-        error: (error: ParseError) => {
-          console.error('Error parsing CSV:', error);
-          alert('Error parsing CSV file. Please check the format.');
-        }
       });
     } else if (fileName.endsWith('.xlsx')) {
       const reader = new FileReader();
