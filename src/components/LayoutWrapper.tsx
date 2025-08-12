@@ -14,25 +14,25 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-screen flex flex-col">
       <BannerAd />
       <Header />
       
-      <div className="flex flex-1">
+      <div className="flex flex-1 overflow-hidden min-h-0">
         {isClient && (
           <>
             {/* Left Side Ad - Desktop Only */}
-            <div className="hidden lg:block w-40 xl:w-48 sticky top-0 h-[calc(100vh-4rem)]">
+            <div className="hidden lg:flex w-40 xl:w-48 h-full overflow-hidden">
               <SideAd position="left" />
             </div>
             
             {/* Main Content */}
-            <main className="flex-1 px-4 py-6 max-w-6xl mx-auto w-full">
+            <main className="flex-1 h-full overflow-auto px-4 py-6 max-w-6xl mx-auto w-full">
               {children}
             </main>
             
             {/* Right Side Ad - Desktop Only */}
-            <div className="hidden lg:block w-40 xl:w-48 sticky top-0 h-[calc(100vh-4rem)]">
+            <div className="hidden lg:flex w-40 xl:w-48 h-full overflow-hidden">
               <SideAd position="right" />
             </div>
           </>
