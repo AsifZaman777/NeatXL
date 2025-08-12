@@ -32,12 +32,7 @@ export default function NavBar() {
             >
               💰 Pricing
             </button>
-            <button
-              onClick={() => router.push("/features")}
-              className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-green-600 hover:text-green-700 hover:bg-green-100 border-2 border-transparent hover:border-green-300 bg-transparent cursor-pointer"
-            >
-              ⚡ Features
-            </button>
+
             <button
               onClick={() => router.push("/contact")}
               className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-green-600 hover:text-green-700 hover:bg-green-100 border-2 border-transparent hover:border-green-300 bg-transparent cursor-pointer"
