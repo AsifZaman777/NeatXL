@@ -12,7 +12,11 @@ interface FixedDataPreviewProps {
   statistics: {
     totalRows: number;
     totalCols: number;
-    numericCols: any[];
+    numericCols: ({
+      min: number;
+      max: number;
+      avg: number;
+    } | null)[];
   } | null;
   onReorderColumns: (oldIndex: number, newIndex: number) => void;
   onReorderRows: (oldIndex: number, newIndex: number) => void;
