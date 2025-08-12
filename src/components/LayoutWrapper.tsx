@@ -27,7 +27,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
             </div>
             
             {/* Main Content */}
-            <main className="flex-1 h-full overflow-auto px-4 py-6 min-w-0">
+            <main className="flex-1 h-full overflow-auto max-w-6xl mx-auto px-4 py-6 min-w-0">
               <div className="w-full">
                 {children}
               </div>
