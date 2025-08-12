@@ -19,7 +19,7 @@ export default function CSVUploader({ onUpload }: CSVUploaderProps) {
     const fileName = file.name.toLowerCase();
 
     if (fileName.endsWith('.csv')) {
-      Papa.parse(file as any, {
+              Papa.parse(file, {
         header: true,
         skipEmptyLines: true,
         complete: (results: ParseResult<Record<string, string>>) => {

@@ -151,7 +151,7 @@ export default function DataPreview({
 }: DataPreviewProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [dragType, setDragType] = useState<'column' | 'row' | null>(null);
-  const [activeData, setActiveData] = useState<any>(null);
+  const [activeData, setActiveData] = useState<{ type: string; index: number } | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -165,7 +165,14 @@ export default function DataPreview({
     setActiveId(String(event.active.id));
     const d = event.active.data.current;
     setDragType(d?.type || null);
-    setActiveData(d);
+    
+    // Type guard for activeData
+    if (d && typeof d === 'object' && 'type' in d && 'index' in d && 
+        typeof d.type === 'string' && typeof d.index === 'number') {
+      setActiveData({ type: d.type, index: d.index });
+    } else {
+      setActiveData(null);
+    }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
