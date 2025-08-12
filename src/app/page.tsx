@@ -74,8 +74,12 @@ export default function Home() {
     
     // Remove empty rows
     if (options.removeEmptyRows) {
-      cleanedData = cleanedData.filter(row => 
-        row.some(cell => cell && cell.trim() !== '')
+      cleanedData = cleanedData.filter(row =>
+        row.some((cell) => {
+          // Treat non-string values as empty unless they stringify to non-empty
+          const s = typeof cell === 'string' ? cell : String(cell ?? '');
+          return s.trim() !== '';
+        })
       );
     }
     
