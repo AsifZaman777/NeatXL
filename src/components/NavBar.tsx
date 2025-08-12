@@ -6,7 +6,7 @@ export default function NavBar() {
   const router = useRouter();
 
   return (
-    <header className="bg-gradient-to-r from-green-50 to-emerald-50 shadow-lg border-b-2 border-green-200">
+    <header className="bg-gradient-to-r from-green-50 to-emerald-50 shadow-sm border-b-2 border-green-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
