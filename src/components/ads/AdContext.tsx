@@ -1,11 +1,9 @@
 // components/ads/AdContext.tsx
 'use client';
 
-import { createContext, useState, useContext, ReactNode } from 'react';
+import { createContext, useState, useContext, ReactNode, useCallback } from 'react';
 
 interface AdContextType {
-  showModalAd: boolean;
-  triggerModalAd: (show: boolean) => void;
   adImpressionCount: number;
   incrementImpression: () => void;
 }
@@ -13,26 +11,14 @@ interface AdContextType {
 const AdContext = createContext<AdContextType | undefined>(undefined);
 
 export function AdProvider({ children }: { children: ReactNode }) {
-  const [showModalAd, setShowModalAd] = useState(false);
   const [adImpressionCount, setAdImpressionCount] = useState(0);
 
-  const triggerModalAd = (show: boolean) => {
-    if (show && adImpressionCount < 3) { // Limit to 3 impressions per session
-      setShowModalAd(true);
-      setAdImpressionCount(prev => prev + 1);
-    } else {
-      setShowModalAd(false);
-    }
-  };
-
-  const incrementImpression = () => {
+  const incrementImpression = useCallback(() => {
     setAdImpressionCount(prev => prev + 1);
-  };
+  }, []);
 
   return (
     <AdContext.Provider value={{ 
-      showModalAd, 
-      triggerModalAd,
       adImpressionCount,
       incrementImpression
     }}>

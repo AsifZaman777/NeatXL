@@ -6,7 +6,6 @@ import CSVUploader from '../components/CSVUploader';
 import DataPreview from '../components/DataPreview';
 import CleaningControls from '../components/CleaningControls';
 import { CSVData } from '../types/types';
-import { useAdContext } from '../components/ads/AdContext';
 
 export default function Home() {
   const [csvData, setCsvData] = useState<CSVData | null>(null);
@@ -20,14 +19,12 @@ export default function Home() {
     standardizeCase: false,
     removeSpecialChars: false
   });
-  const { triggerModalAd } = useAdContext();
+  
 
   const handleFileUpload = (data: CSVData, fileType?: 'csv' | 'xlsx') => {
     setCsvData(data);
     setReorderedData(null); // Reset reordered data when new file is uploaded
     setUploadedFileType(fileType || 'csv');
-    // Trigger ad on first upload
-    triggerModalAd(true);
   };
 
   // Function to handle column reordering
@@ -283,12 +280,8 @@ export default function Home() {
       </div>
 
       <div className="mt-8 text-center text-sm text-green-600">
-        <p className="font-medium">Free version limited to 10,000 rows. <button 
-          onClick={() => triggerModalAd(true)}
-          className="text-green-700 hover:text-green-800 font-bold underline decoration-2 decoration-green-400 hover:decoration-green-600 transition-all"
-        >
-          🚀 Upgrade to Pro
-        </button> for unlimited processing.</p>
+        <p className="font-medium">Free version limited to 10,000 rows.
+        </p>
       </div>
     </div>
   );

@@ -2,26 +2,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAdContext } from './ads/AdContext';
-import ModalAd from './ads/ModalAd';
 import SideAd from './ads/SideAd';
 import BannerAd from './ads/BannerAd';
-import Header from './Header';
+import Header from './NavBar';
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
-  const { triggerModalAd } = useAdContext();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    
-    // Show modal ad after 30 seconds
-    const timer = setTimeout(() => {
-      triggerModalAd(true);
-    }, 30000);
-
-    return () => clearTimeout(timer);
-  }, [triggerModalAd]);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -52,8 +42,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
       <footer className="py-6 border-t border-gray-200 text-center text-gray-500 text-sm">
         <p>© {new Date().getFullYear()} NeatSheet - Simple CSV cleaning tool</p>
       </footer>
-      
-      <ModalAd />
+
     </div>
   );
 }
