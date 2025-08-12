@@ -22,17 +22,19 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         {isClient && (
           <>
             {/* Left Side Ad - Desktop Only */}
-            <div className="hidden lg:flex w-40 xl:w-48 h-full overflow-hidden">
+            <div className="hidden lg:flex w-40 xl:w-48 h-full overflow-hidden flex-shrink-0">
               <SideAd position="left" />
             </div>
             
             {/* Main Content */}
-            <main className="flex-1 h-full overflow-auto px-4 py-6 max-w-6xl mx-auto w-full">
-              {children}
+            <main className="flex-1 h-full overflow-auto px-4 py-6 min-w-0">
+              <div className="w-full">
+                {children}
+              </div>
             </main>
             
             {/* Right Side Ad - Desktop Only */}
-            <div className="hidden lg:flex w-40 xl:w-48 h-full overflow-hidden">
+            <div className="hidden lg:flex w-40 xl:w-48 h-full overflow-hidden flex-shrink-0">
               <SideAd position="right" />
             </div>
           </>

@@ -17,7 +17,7 @@ export default function SideAd({ position }: SideAdProps) {
   }, [incrementImpression]);
 
   return (
-    <div className={`h-full flex justify-center pt-8 ${position === 'left' ? 'pr-2' : 'pl-2'}`}>
+    <div className={`h-full w-full flex ${position === 'left' ? 'justify-end pr-4' : 'justify-start pl-4'} pt-8`}>
       <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 w-36 h-fit">
         <div className="text-xs text-gray-400 mb-1">Sponsored</div>
         <div className="bg-gray-200 border-2 border-dashed rounded-lg w-full h-32 flex items-center justify-center text-gray-500 mb-2">

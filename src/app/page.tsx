@@ -450,7 +450,7 @@ export default function Home() {
   const statistics = getStatistics();
 
   return (
-    <div className="max-w-6xl mx-auto w-full border-2 border-green-500 rounded-lg bg-gradient-to-br from-green-50 to-emerald-100 p-4">
+    <div className="w-full 2xl:max-w-6xl 2xl:mx-auto border-2 border-green-500 rounded-lg bg-gradient-to-br from-green-50 to-emerald-100 p-4">
       <div className="text-center mb-8">
         <div className="flex justify-center items-center mb-4">
           <h1 className="text-5xl font-bold text-green-800 mb-3">
