@@ -3,8 +3,10 @@
 
 import { useEffect } from 'react';
 import { useAdContext } from './AdContext';
+import { useRouter } from "next/navigation";
 
 export default function BannerAd() {
+  const router = useRouter();
   const { incrementImpression } = useAdContext();
 
   useEffect(() => {
@@ -21,8 +23,7 @@ export default function BannerAd() {
         <button 
           className="text-sm bg-white text-blue-600 px-4 py-1 rounded-full font-medium hover:bg-gray-100 transition-colors whitespace-nowrap"
           onClick={() => {
-            // Track click
-            console.log('Banner ad clicked');
+            router.push('/pricing');
           }}
         >
           Upgrade Now

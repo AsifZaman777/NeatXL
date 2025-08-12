@@ -40,7 +40,7 @@ export default function NavBar() {
               📞 Contact
             </button>
             <button
-              onClick={() => router.push("/get-started")}
+              onClick={() => router.push("/pricing")}
               className="ml-4 px-6 py-2 text-sm font-bold text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-lg shadow-lg transition-all transform hover:scale-105 border-2 border-green-400 cursor-pointer"
             >
               🚀 Get Started

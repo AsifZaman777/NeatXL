@@ -39,7 +39,7 @@ export default function PricingPage() {
 						<div className="absolute top-4 right-4 bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold">POPULAR</div>
 						<div className="text-center mb-6">
 							<h3 className="text-2xl font-bold text-emerald-800 mb-2">🚀 Pro</h3>
-							<div className="text-4xl font-bold text-emerald-700">$19</div>
+							<div className="text-4xl font-bold text-emerald-700">$5</div>
 							<div className="text-emerald-600 text-sm">per month</div>
 						</div>
 						<ul className="space-y-4 mb-8">
@@ -57,7 +57,7 @@ export default function PricingPage() {
 						<div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-600 to-green-700"></div>
 						<div className="text-center mb-6">
 							<h3 className="text-2xl font-bold text-green-800 mb-2">🏢 Enterprise</h3>
-							<div className="text-4xl font-bold text-green-700">$99</div>
+							<div className="text-4xl font-bold text-green-700">$10</div>
 							<div className="text-green-600 text-sm">per month</div>
 						</div>
 						<ul className="space-y-4 mb-8">
