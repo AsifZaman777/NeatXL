@@ -40,7 +40,18 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
       </div>
       
       <footer className="py-6 border-t border-gray-200 text-center text-gray-500 text-sm">
-        <p>© {new Date().getFullYear()} NeatSheet - Simple CSV cleaning tool</p>
+        <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
+          <span>© {new Date().getFullYear()} NeatSheet - Simple CSV cleaning tool</span>
+          <span>•</span>
+          <a
+            href="mailto:asifzaman3123@gmail.com"
+            className="font-medium text-green-700 hover:text-green-800"
+          >
+            asifzaman3123@gmail.com
+          </a>
+          <span>•</span>
+          <span className="text-gray-400">MIT License — Copyright (c) 2025 Asif Zaman</span>
+        </div>
       </footer>
 
     </div>
