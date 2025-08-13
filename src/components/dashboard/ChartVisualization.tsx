@@ -1,267 +1,327 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import type { ChartData, ChartOptions } from 'chart.js';
+import {
+  Bar,
+  Line,
+  Pie,
+  Scatter,
+} from 'react-chartjs-2';
 import { CSVData } from '../../types/types';
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 interface ChartVisualizationProps {
   data: CSVData;
+  columns?: string[];
 }
 
-export default function ChartVisualization({ data }: ChartVisualizationProps) {
+export default function ChartVisualization({ data, columns }: ChartVisualizationProps) {
+  const availableColumns = columns || data?.headers || [];
   const [selectedChart, setSelectedChart] = useState<'bar' | 'line' | 'pie' | 'scatter'>('bar');
-  const [xColumn, setXColumn] = useState<string>(data.headers[0] || '');
-  const [yColumn, setYColumn] = useState<string>(data.headers[1] || '');
+  const [xColumn, setXColumn] = useState(availableColumns[0] || '');
+  const [yColumn, setYColumn] = useState(availableColumns[1] || '');
 
-  // Process data for charts
+  // Prepare chart data
   const chartData = useMemo(() => {
-    if (!xColumn || !yColumn) return [];
+    if (!data || !data.data || data.data.length === 0) return [];
     
-    const xIndex = data.headers.indexOf(xColumn);
-    const yIndex = data.headers.indexOf(yColumn);
+    const xColumnIndex = data.headers.indexOf(xColumn);
+    const yColumnIndex = data.headers.indexOf(yColumn);
     
-    if (xIndex === -1 || yIndex === -1) return [];
-
-    const processedData = data.data.map((row, index) => ({
-      x: row[xIndex] || `Row ${index + 1}`,
-      y: parseFloat(row[yIndex]) || 0,
-    })).filter(item => !isNaN(item.y));
-
-    return processedData.slice(0, 20); // Limit to 20 items for better visualization
+    if (xColumnIndex === -1 || yColumnIndex === -1) return [];
+    
+    return data.data.slice(0, 20).map((row: string[], index: number) => ({
+      x: row[xColumnIndex] || `Item ${index + 1}`,
+      y: parseFloat(String(row[yColumnIndex])) || 0,
+    }));
   }, [data, xColumn, yColumn]);
 
-  const maxValue = Math.max(...chartData.map(item => item.y), 1);
+  // Generate colors
+  const colors = useMemo(() => {
+    return chartData.map((_, index) => 
+      `hsl(${(index * 137.5) % 360}, 70%, 60%)`
+    );
+  }, [chartData]);
 
-  const renderBarChart = () => (
-    <div className="space-y-2">
-      {chartData.map((item, index) => (
-        <div key={index} className="flex items-center space-x-3">
-          <div className="w-20 text-sm text-gray-600 truncate" title={item.x}>
-            {item.x}
-          </div>
-          <div className="flex-1 bg-gray-200 rounded-full h-8 relative">
-            <div
-              className="bg-gradient-to-r from-green-400 to-green-600 h-8 rounded-full flex items-center justify-end pr-2 transition-all duration-500"
-              style={{ width: `${(item.y / maxValue) * 100}%` }}
-            >
-              <span className="text-white text-xs font-semibold">
-                {item.y.toFixed(1)}
-              </span>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+  // Prepare data for different chart types
+  const chartDataFormatted = useMemo(() => {
+    if (selectedChart === 'scatter') {
+      return {
+        datasets: [
+          {
+            label: `${xColumn} vs ${yColumn}`,
+            data: chartData.map((item, index) => ({ x: index, y: item.y })),
+            backgroundColor: 'rgba(16, 185, 129, 0.6)',
+            borderColor: 'rgba(16, 185, 129, 1)',
+            borderWidth: 2,
+            pointRadius: 6,
+            pointHoverRadius: 8,
+          },
+        ],
+      } as ChartData<'scatter'>;
+    }
 
-  const renderLineChart = () => (
-    <div className="relative h-64 border border-gray-200 rounded-lg p-4">
-      <svg width="100%" height="100%" viewBox="0 0 400 200">
-        {/* Grid lines */}
-        {[0, 1, 2, 3, 4].map(i => (
-          <line
-            key={i}
-            x1="0"
-            y1={i * 40}
-            x2="400"
-            y2={i * 40}
-            stroke="#e5e7eb"
-            strokeWidth="1"
-          />
-        ))}
-        
-        {/* Chart line */}
-        {chartData.length > 1 && (
-          <polyline
-            fill="none"
-            stroke="#10b981"
-            strokeWidth="3"
-            points={chartData.map((item, index) => 
-              `${(index / (chartData.length - 1)) * 400},${200 - (item.y / maxValue) * 180}`
-            ).join(' ')}
-          />
-        )}
-        
-        {/* Data points */}
-        {chartData.map((item, index) => (
-          <circle
-            key={index}
-            cx={(index / (chartData.length - 1)) * 400}
-            cy={200 - (item.y / maxValue) * 180}
-            r="4"
-            fill="#059669"
-          />
-        ))}
-      </svg>
-    </div>
-  );
-
-  const renderPieChart = () => {
-    const total = chartData.reduce((sum, item) => sum + item.y, 0);
-    let currentAngle = 0;
+    const labels = chartData.map(item => String(item.x));
+    const values = chartData.map(item => item.y);
     
-    return (
-      <div className="flex items-center justify-center">
-        <div className="relative">
-          <svg width="200" height="200" viewBox="0 0 200 200">
-            {chartData.slice(0, 8).map((item, index) => {
-              const angle = (item.y / total) * 360;
-              const startAngle = currentAngle;
-              const endAngle = currentAngle + angle;
-              currentAngle += angle;
+    if (selectedChart === 'pie') {
+      return {
+        labels,
+        datasets: [
+          {
+            label: yColumn,
+            data: values,
+            backgroundColor: colors.map(color => color.replace('60%', '50%')),
+            borderColor: colors.map(color => color.replace('60%', '70%')),
+            borderWidth: 2,
+          },
+        ],
+      } as ChartData<'pie'>;
+    }
 
-              const x1 = 100 + 80 * Math.cos((startAngle * Math.PI) / 180);
-              const y1 = 100 + 80 * Math.sin((startAngle * Math.PI) / 180);
-              const x2 = 100 + 80 * Math.cos((endAngle * Math.PI) / 180);
-              const y2 = 100 + 80 * Math.sin((endAngle * Math.PI) / 180);
+    if (selectedChart === 'line') {
+      return {
+        labels,
+        datasets: [
+          {
+            label: yColumn,
+            data: values,
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderColor: 'rgba(16, 185, 129, 1)',
+            borderWidth: 3,
+            tension: 0.4,
+            fill: false,
+            pointBackgroundColor: 'rgba(16, 185, 129, 1)',
+            pointBorderColor: 'rgba(16, 185, 129, 1)',
+            pointRadius: 5,
+            pointHoverRadius: 7,
+          },
+        ],
+      } as ChartData<'line'>;
+    }
 
-              const largeArc = angle > 180 ? 1 : 0;
+    // Default to bar chart
+    return {
+      labels,
+      datasets: [
+        {
+          label: yColumn,
+          data: values,
+          backgroundColor: 'rgba(16, 185, 129, 0.6)',
+          borderColor: 'rgba(16, 185, 129, 1)',
+          borderWidth: 2,
+        },
+      ],
+    } as ChartData<'bar'>;
+  }, [chartData, selectedChart, xColumn, yColumn, colors]);
 
-              return (
-                <path
-                  key={index}
-                  d={`M 100 100 L ${x1} ${y1} A 80 80 0 ${largeArc} 1 ${x2} ${y2} Z`}
-                  fill={`hsl(${(index * 45) % 360}, 70%, 60%)`}
-                  stroke="white"
-                  strokeWidth="2"
-                />
-              );
-            })}
-          </svg>
+  // Chart options
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const chartOptions: ChartOptions<any> = useMemo(() => ({
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+        labels: {
+          color: '#374151',
+          font: {
+            size: 12,
+            weight: 'bold',
+          },
+        },
+      },
+      title: {
+        display: true,
+        text: `${yColumn} ${selectedChart === 'scatter' ? 'vs' : 'by'} ${xColumn}`,
+        color: '#1f2937',
+        font: {
+          size: 16,
+          weight: 'bold',
+        },
+        padding: 20,
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleColor: '#ffffff',
+        bodyColor: '#ffffff',
+        borderColor: 'rgba(16, 185, 129, 1)',
+        borderWidth: 1,
+        cornerRadius: 8,
+        displayColors: true,
+      },
+    },
+    scales: selectedChart === 'pie' ? undefined : {
+      x: {
+        grid: {
+          color: 'rgba(156, 163, 175, 0.3)',
+        },
+        ticks: {
+          color: '#6b7280',
+          font: {
+            size: 11,
+          },
+          maxRotation: 45,
+        },
+        title: {
+          display: true,
+          text: xColumn,
+          color: '#374151',
+          font: {
+            size: 13,
+            weight: 'bold',
+          },
+        },
+      },
+      y: {
+        grid: {
+          color: 'rgba(156, 163, 175, 0.3)',
+        },
+        ticks: {
+          color: '#6b7280',
+          font: {
+            size: 11,
+          },
+        },
+        title: {
+          display: true,
+          text: yColumn,
+          color: '#374151',
+          font: {
+            size: 13,
+            weight: 'bold',
+          },
+        },
+      },
+    },
+  }), [selectedChart, xColumn, yColumn]);
+
+  const renderChart = () => {
+    try {
+      switch (selectedChart) {
+        case 'bar':
+          return <Bar data={chartDataFormatted as ChartData<'bar'>} options={chartOptions} />;
+        case 'line':
+          return <Line data={chartDataFormatted as ChartData<'line'>} options={chartOptions} />;
+        case 'pie':
+          return <Pie data={chartDataFormatted as ChartData<'pie'>} options={chartOptions} />;
+        case 'scatter':
+          return <Scatter data={chartDataFormatted as ChartData<'scatter'>} options={chartOptions} />;
+        default:
+          return <Bar data={chartDataFormatted as ChartData<'bar'>} options={chartOptions} />;
+      }
+    } catch (error) {
+      console.error('Chart rendering error:', error);
+      return (
+        <div className="flex items-center justify-center h-64 text-red-500">
+          Error rendering chart. Please check your data.
         </div>
-        <div className="ml-8 space-y-2">
-          {chartData.slice(0, 8).map((item, index) => (
-            <div key={index} className="flex items-center space-x-2">
-              <div
-                className="w-4 h-4 rounded"
-                style={{ backgroundColor: `hsl(${(index * 45) % 360}, 70%, 60%)` }}
-              />
-              <span className="text-sm text-gray-600">
-                {item.x}: {((item.y / total) * 100).toFixed(1)}%
-              </span>
-            </div>
-          ))}
+      );
+    }
+  };
+
+  if (!data || !data.data || data.data.length === 0) {
+    return (
+      <div className="bg-white p-6 rounded-lg shadow-sm border">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Chart Visualization</h3>
+        <div className="flex items-center justify-center h-64 text-gray-500">
+          No data available for visualization
         </div>
       </div>
     );
-  };
-
-  const renderScatterPlot = () => (
-    <div className="relative h-64 border border-gray-200 rounded-lg p-4">
-      <svg width="100%" height="100%" viewBox="0 0 400 200">
-        {/* Grid lines */}
-        {[0, 1, 2, 3, 4].map(i => (
-          <g key={i}>
-            <line x1="0" y1={i * 40} x2="400" y2={i * 40} stroke="#e5e7eb" strokeWidth="1" />
-            <line x1={i * 80} y1="0" x2={i * 80} y2="200" stroke="#e5e7eb" strokeWidth="1" />
-          </g>
-        ))}
-        
-        {/* Scatter points */}
-        {chartData.map((item, index) => (
-          <circle
-            key={index}
-            cx={(index / (chartData.length - 1)) * 400}
-            cy={200 - (item.y / maxValue) * 180}
-            r="6"
-            fill="#10b981"
-            fillOpacity="0.7"
-            stroke="#059669"
-            strokeWidth="2"
-          />
-        ))}
-      </svg>
-    </div>
-  );
+  }
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">📈 Data Visualization</h2>
-      
-      {/* Controls */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 p-4 bg-gray-50 rounded-lg">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Chart Type</label>
-          <select
-            value={selectedChart}
-            onChange={(e) => setSelectedChart(e.target.value as 'bar' | 'line' | 'pie' | 'scatter')}
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
-          >
-            <option value="bar">📊 Bar Chart</option>
-            <option value="line">📈 Line Chart</option>
-            <option value="pie">🥧 Pie Chart</option>
-            <option value="scatter">🔸 Scatter Plot</option>
-          </select>
-        </div>
+    <div className="bg-white p-6 rounded-lg shadow-sm border">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+        <h3 className="text-lg font-semibold text-gray-900">Chart Visualization</h3>
         
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">X-Axis Column</label>
-          <select
-            value={xColumn}
-            onChange={(e) => setXColumn(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
-          >
-            {data.headers.map((header, index) => (
-              <option key={index} value={header}>{header}</option>
-            ))}
-          </select>
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Y-Axis Column</label>
-          <select
-            value={yColumn}
-            onChange={(e) => setYColumn(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
-          >
-            {data.headers.map((header, index) => (
-              <option key={index} value={header}>{header}</option>
-            ))}
-          </select>
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Chart Type Selector */}
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700">Chart Type:</label>
+            <select
+              value={selectedChart}
+              onChange={(e) => setSelectedChart(e.target.value as 'bar' | 'line' | 'pie' | 'scatter')}
+              className="px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            >
+              <option value="bar">Bar Chart</option>
+              <option value="line">Line Chart</option>
+              <option value="pie">Pie Chart</option>
+              <option value="scatter">Scatter Plot</option>
+            </select>
+          </div>
+
+          {/* X-Axis Column Selector */}
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700">X-Axis:</label>
+            <select
+              value={xColumn}
+              onChange={(e) => setXColumn(e.target.value)}
+              className="px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            >
+              {availableColumns.map((column) => (
+                <option key={column} value={column}>
+                  {column}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Y-Axis Column Selector */}
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700">Y-Axis:</label>
+            <select
+              value={yColumn}
+              onChange={(e) => setYColumn(e.target.value)}
+              className="px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            >
+              {availableColumns.map((column) => (
+                <option key={column} value={column}>
+                  {column}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
-      {/* Chart Display */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
-          {selectedChart.charAt(0).toUpperCase() + selectedChart.slice(1)} Chart: {xColumn} vs {yColumn}
-        </h3>
-        
-        {chartData.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            <p>No numeric data available for the selected columns.</p>
-            <p className="text-sm mt-2">Please select columns with numeric values for the Y-axis.</p>
-          </div>
-        ) : (
-          <div>
-            {selectedChart === 'bar' && renderBarChart()}
-            {selectedChart === 'line' && renderLineChart()}
-            {selectedChart === 'pie' && renderPieChart()}
-            {selectedChart === 'scatter' && renderScatterPlot()}
-          </div>
-        )}
+      {/* Chart Container */}
+      <div className="h-96 w-full bg-gray-50 rounded-lg p-4">
+        {renderChart()}
       </div>
 
       {/* Chart Info */}
-      <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-        <h4 className="font-semibold text-blue-800 mb-2">Chart Information</h4>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-          <div>
-            <span className="text-blue-600 font-medium">Data Points:</span>
-            <span className="ml-2">{chartData.length}</span>
-          </div>
-          <div>
-            <span className="text-blue-600 font-medium">Max Value:</span>
-            <span className="ml-2">{maxValue.toFixed(2)}</span>
-          </div>
-          <div>
-            <span className="text-blue-600 font-medium">Min Value:</span>
-            <span className="ml-2">{Math.min(...chartData.map(item => item.y), 0).toFixed(2)}</span>
-          </div>
-          <div>
-            <span className="text-blue-600 font-medium">Average:</span>
-            <span className="ml-2">{(chartData.reduce((sum, item) => sum + item.y, 0) / chartData.length || 0).toFixed(2)}</span>
-          </div>
-        </div>
+      <div className="mt-4 text-sm text-gray-600">
+        <p>
+          Showing data visualization for <span className="font-medium">{yColumn}</span> by{' '}
+          <span className="font-medium">{xColumn}</span> (first 20 rows)
+        </p>
       </div>
     </div>
   );
