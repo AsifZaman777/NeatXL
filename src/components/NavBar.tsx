@@ -27,6 +27,12 @@ export default function NavBar() {
               🏠 Home
             </button>
             <button
+              onClick={() => router.push("/dashboard")}
+              className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-green-600 hover:text-green-700 hover:bg-green-100 border-2 border-transparent hover:border-green-300 bg-transparent cursor-pointer"
+            >
+              📊 Dashboard
+            </button>
+            <button
               onClick={() => router.push("/pricing")}
               className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-green-600 hover:text-green-700 hover:bg-green-100 border-2 border-transparent hover:border-green-300 bg-transparent cursor-pointer"
             >
