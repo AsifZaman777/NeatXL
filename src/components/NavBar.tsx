@@ -1,9 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useData } from "../contexts/DataContext";
 
 export default function NavBar() {
   const router = useRouter();
+  const { hasData, clearAllData } = useData();
 
   return (
     <header className="bg-gradient-to-r from-green-50 to-emerald-50 shadow-sm border-b-2 border-green-200">
@@ -28,9 +30,12 @@ export default function NavBar() {
             </button>
             <button
               onClick={() => router.push("/dashboard")}
-              className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-green-600 hover:text-green-700 hover:bg-green-100 border-2 border-transparent hover:border-green-300 bg-transparent cursor-pointer"
+              className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-green-600 hover:text-green-700 hover:bg-green-100 border-2 border-transparent hover:border-green-300 bg-transparent cursor-pointer relative"
             >
               📊 Dashboard
+              {hasData && (
+                <span className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full"></span>
+              )}
             </button>
             <button
               onClick={() => router.push("/pricing")}
@@ -45,6 +50,20 @@ export default function NavBar() {
             >
               📞 Contact
             </button>
+            
+            {/* {hasData && (
+              <button
+                onClick={() => {
+                  clearAllData();
+                  router.push("/");
+                }}
+                className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-red-600 hover:text-red-700 hover:bg-red-100 border-2 border-transparent hover:border-red-300 bg-transparent cursor-pointer"
+                title="Clear uploaded data"
+              >
+                🗑️ Clear Data
+              </button>
+            )} */}
+            
             <button
               onClick={() => router.push("/pricing")}
               className="ml-4 px-6 py-2 text-sm font-bold text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-lg shadow-lg transition-all transform hover:scale-105 border-2 border-green-400 cursor-pointer"

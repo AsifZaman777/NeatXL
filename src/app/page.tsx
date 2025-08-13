@@ -6,10 +6,10 @@ import CSVUploader from '../components/CSVUploader';
 import DataPreview from '../components/DataPreview';
 import CleaningControls from '../components/CleaningControls';
 import { CSVData } from '../types/types';
+import { useData } from '../contexts/DataContext';
 
 export default function Home() {
-  const [csvData, setCsvData] = useState<CSVData | null>(null);
-  const [reorderedData, setReorderedData] = useState<CSVData | null>(null);
+  const { csvData, setCsvData, reorderedData, setReorderedData } = useData();
   const [processing, setProcessing] = useState(false);
   const [cleanOptions, setCleanOptions] = useState({
     // Basic cleaning
@@ -449,6 +449,29 @@ export default function Home() {
           Clean, transform, and analyze your CSV files in seconds
         </p>
       </div>
+
+      {/* Dashboard Banner - Show when data is available */}
+      {/* {csvData && (
+        <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">📊</span>
+              <div>
+                <h3 className="text-lg font-bold text-blue-800">Data Loaded Successfully!</h3>
+                <p className="text-blue-600">
+                  Ready to visualize your data? Check out the dashboard for charts and analytics.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => window.location.href = '/dashboard'}
+              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold rounded-lg shadow-lg transition-all transform hover:scale-105"
+            >
+              📊 Go to Dashboard
+            </button>
+          </div>
+        </div>
+      )} */}
 
       <div className="rounded-xl shadow-lg border-2 border-green-200 overflow-hidden backdrop-blur-sm bg-white/90">
         {!csvData ? (
