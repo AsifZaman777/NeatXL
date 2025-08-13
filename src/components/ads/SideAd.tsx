@@ -55,7 +55,6 @@ export default function SideAd({ position }: SideAdProps) {
   }, [incrementImpression]);
 
   const currentAd = adData[currentAdIndex];
-  const hasMultipleAds = adData.length > 1;
 
   return (
     <div

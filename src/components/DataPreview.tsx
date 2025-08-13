@@ -1,7 +1,7 @@
 // components/DataPreview.tsx
 'use client';
 
-import { CSVData, DataPreviewProps } from '../types/types';
+import { DataPreviewProps } from '../types/types';
 import {
   DndContext,
   DragEndEvent,

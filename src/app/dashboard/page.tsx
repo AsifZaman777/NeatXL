@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { CSVData } from '../../types/types';
 import CSVUploader from '../../components/CSVUploader';
 import ChartVisualization from '../../components/dashboard/ChartVisualization';

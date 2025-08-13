@@ -3,12 +3,36 @@
 import { useMemo } from 'react';
 import { CSVData } from '../../types/types';
 
+interface NumericStats {
+  column: string;
+  type: 'numeric';
+  count: number;
+  unique: number;
+  missing: number;
+  min: number;
+  max: number;
+  mean: number;
+  median: number;
+  std: number;
+}
+
+interface CategoricalStats {
+  column: string;
+  type: 'categorical';
+  count: number;
+  unique: number;
+  missing: number;
+  mostCommon: { value: string; count: number } | null;
+}
+
+type ColumnStats = NumericStats | CategoricalStats;
+
 interface DataSummaryProps {
   data: CSVData;
 }
 
 export default function DataSummary({ data }: DataSummaryProps) {
-  const statistics = useMemo(() => {
+  const statistics = useMemo((): ColumnStats[] => {
     const stats = data.headers.map(header => {
       const columnIndex = data.headers.indexOf(header);
       const columnData = data.data.map(row => row[columnIndex]).filter(value => value !== '');
@@ -27,7 +51,7 @@ export default function DataSummary({ data }: DataSummaryProps) {
         
         return {
           column: header,
-          type: 'numeric',
+          type: 'numeric' as const,
           count: numericData.length,
           unique: new Set(numericData).size,
           missing: data.data.length - columnData.length,
@@ -48,7 +72,7 @@ export default function DataSummary({ data }: DataSummaryProps) {
         
         return {
           column: header,
-          type: 'categorical',
+          type: 'categorical' as const,
           count: columnData.length,
           unique: Object.keys(valueCounts).length,
           missing: data.data.length - columnData.length,
@@ -160,14 +184,14 @@ export default function DataSummary({ data }: DataSummaryProps) {
                   <td className="px-6 py-4 text-sm text-gray-500">
                     {stat.type === 'numeric' ? (
                       <div className="space-y-1">
-                        <div>Min: {(stat as any).min.toFixed(2)}, Max: {(stat as any).max.toFixed(2)}</div>
-                        <div>Mean: {(stat as any).mean.toFixed(2)}, Median: {(stat as any).median.toFixed(2)}</div>
-                        <div>Std Dev: {(stat as any).std.toFixed(2)}</div>
+                        <div>Min: {stat.min.toFixed(2)}, Max: {stat.max.toFixed(2)}</div>
+                        <div>Mean: {stat.mean.toFixed(2)}, Median: {stat.median.toFixed(2)}</div>
+                        <div>Std Dev: {stat.std.toFixed(2)}</div>
                       </div>
                     ) : (
                       <div>
-                        {(stat as any).mostCommon && (
-                          <div>Most common: "{(stat as any).mostCommon.value}" ({(stat as any).mostCommon.count}x)</div>
+                        {stat.mostCommon && (
+                          <div>Most common: &quot;{stat.mostCommon.value}&quot; ({stat.mostCommon.count}x)</div>
                         )}
                       </div>
                     )}

@@ -10,7 +10,6 @@ import { CSVData } from '../types/types';
 export default function Home() {
   const [csvData, setCsvData] = useState<CSVData | null>(null);
   const [reorderedData, setReorderedData] = useState<CSVData | null>(null);
-  const [uploadedFileType, setUploadedFileType] = useState<'csv' | 'xlsx' | null>(null);
   const [processing, setProcessing] = useState(false);
   const [cleanOptions, setCleanOptions] = useState({
     // Basic cleaning
@@ -60,7 +59,6 @@ export default function Home() {
   const handleFileUpload = (data: CSVData, fileType?: 'csv' | 'xlsx') => {
     setCsvData(data);
     setReorderedData(null); // Reset reordered data when new file is uploaded
-    setUploadedFileType(fileType || 'csv');
   };
 
   // Function to handle column reordering
@@ -209,16 +207,6 @@ export default function Home() {
       return text.split(' ')
                 .filter(word => !stopWords.includes(word.toLowerCase()))
                 .join(' ');
-    };
-    
-    const extractUrls = (text: string): string[] => {
-      const urlRegex = /https?:\/\/[^\s]+/g;
-      return text.match(urlRegex) || [];
-    };
-    
-    const extractEmailsFromText = (text: string): string[] => {
-      const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
-      return text.match(emailRegex) || [];
     };
     
     const maskSensitiveData = (text: string): string => {

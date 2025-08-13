@@ -3,7 +3,7 @@
 
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import Papa, { ParseResult, ParseError } from 'papaparse';
+import Papa, { ParseResult } from 'papaparse';
 import * as XLSX from 'xlsx';
 import { CSVData } from '../types/types';
 

@@ -104,7 +104,6 @@ export default function ChartVisualization({ data }: ChartVisualizationProps) {
         <div className="relative">
           <svg width="200" height="200" viewBox="0 0 200 200">
             {chartData.slice(0, 8).map((item, index) => {
-              const percentage = (item.y / total) * 100;
               const angle = (item.y / total) * 360;
               const startAngle = currentAngle;
               const endAngle = currentAngle + angle;
@@ -184,7 +183,7 @@ export default function ChartVisualization({ data }: ChartVisualizationProps) {
           <label className="block text-sm font-medium text-gray-700 mb-2">Chart Type</label>
           <select
             value={selectedChart}
-            onChange={(e) => setSelectedChart(e.target.value as any)}
+            onChange={(e) => setSelectedChart(e.target.value as 'bar' | 'line' | 'pie' | 'scatter')}
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
           >
             <option value="bar">📊 Bar Chart</option>
