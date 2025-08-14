@@ -111,9 +111,9 @@ export default function CleaningControls({
 
   return (
     <div className="mt-6 p-6 bg-gradient-to-br from-green-50 to-emerald-100 rounded-xl border-2 border-green-200 shadow-lg">
-      <h3 className="text-xl font-bold text-green-800 mb-6 flex items-center">
+      {/* <h3 className="text-xl font-bold text-green-800 mb-6 flex items-center">
         🛠️ Data Cleaning Options
-      </h3>
+      </h3> */}
       
       {/* Basic Data Quality Section */}
       <div className="mb-8">

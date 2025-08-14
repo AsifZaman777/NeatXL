@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import CSVUploader from '../components/CSVUploader';
 import DataPreview from '../components/DataPreview';
 import CleaningControls from '../components/CleaningControls';
+import SmoothDrawer from '../components/SmoothDrawer';
 import { CSVData } from '../types/types';
 import { useData } from '../contexts/DataContext';
 
@@ -12,8 +13,6 @@ export default function Home() {
   const { csvData, setCsvData, reorderedData, setReorderedData } = useData();
   const [processing, setProcessing] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [drawerHeight, setDrawerHeight] = useState(300); // Initial height in pixels
-  const [isDragging, setIsDragging] = useState(false);
   const [cleanOptions, setCleanOptions] = useState({
     // Basic cleaning
     removeDuplicates: true,
@@ -57,48 +56,12 @@ export default function Home() {
     addTimestamp: false,
     generateIds: false,
   });
-  
-  // Handle drawer resizing
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    e.preventDefault();
-  };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging) return;
-    
-    const windowHeight = window.innerHeight;
-    const newHeight = windowHeight - e.clientY;
-    const minHeight = 200;
-    const maxHeight = windowHeight * 0.8;
-    
-    setDrawerHeight(Math.max(minHeight, Math.min(newHeight, maxHeight)));
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  // Add global mouse event listeners when dragging
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      document.body.style.cursor = 'ns-resize';
-      document.body.style.userSelect = 'none';
-      
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-        document.body.style.cursor = '';
-        document.body.style.userSelect = '';
-      };
-    }
-  }, [isDragging]);
 
   const handleFileUpload = (data: CSVData, fileType?: 'csv' | 'xlsx') => {
     setCsvData(data);
     setReorderedData(null); // Reset reordered data when new file is uploaded
+    // Auto-open drawer when data is uploaded
+    setDrawerOpen(true);
   };
 
   // Function to handle column reordering
@@ -524,6 +487,12 @@ export default function Home() {
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-bold text-green-800">📊 Data Spreadsheet</h2>
                 <div className="flex gap-2">
+                  <button 
+                    onClick={() => setDrawerOpen(true)}
+                    className="px-4 py-2 text-sm text-purple-600 hover:text-purple-800 font-medium bg-purple-50 hover:bg-purple-100 rounded-lg border border-purple-300 transition-all"
+                  >
+                    🧹 Clean Data
+                  </button>
                   {reorderedData && (
                     <button 
                       onClick={() => setReorderedData(null)}
@@ -591,97 +560,24 @@ export default function Home() {
         )}
       </div>
 
-      {/* Floating Clean Data Button - Show only when data is loaded */}
-      {csvData && (
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className="fixed bottom-6 right-6 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 z-40"
-        >
-          <div className="flex items-center space-x-2">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
-            </svg>
-            <span className="font-medium">Clean Data</span>
-          </div>
-        </button>
-      )}
-
-      {/* Resizable Bottom Drawer */}
-      {drawerOpen && (
-        <div className="fixed inset-0 z-50 pointer-events-none">
-          {/* Resizable Drawer - positioned at bottom only */}
-          <div 
-            className="absolute bottom-0 left-0 right-0 bg-white border-t-2 border-green-300 shadow-2xl pointer-events-auto"
-            style={{ height: `${drawerHeight}px` }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Resize Handle */}
-            <div
-              className="w-full h-2 bg-green-100 hover:bg-green-200 cursor-ns-resize flex items-center justify-center group transition-colors"
-              onMouseDown={handleMouseDown}
-            >
-              <div className="w-12 h-1 bg-green-400 rounded-full group-hover:bg-green-500 transition-colors"></div>
-            </div>
-
-            {/* Drawer Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-green-50 to-emerald-50">
-              <div className="flex items-center space-x-3">
-                <div className="bg-green-100 p-2 rounded-lg">
-                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-green-800">Data Cleaning Options</h3>
-                  <p className="text-sm text-green-600">Drag the handle above to resize • Click outside to close</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setDrawerOpen(false)}
-                className="bg-gray-100 hover:bg-gray-200 p-2 rounded-lg transition-colors"
-              >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Drawer Content - Scrollable */}
-            <div className="overflow-y-auto" style={{ height: `${drawerHeight - 120}px` }}>
-              <div className="p-4">
-                <CleaningControls 
-                  options={cleanOptions}
-                  setOptions={setCleanOptions}
-                  processing={processing}
-                />
-              </div>
-            </div>
-
-            {/* Drawer Footer */}
-            <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200 p-3 bg-gray-50 flex justify-between items-center">
-              <div className="text-sm text-gray-600 flex items-center space-x-2">
-                <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                <span>Changes apply in real-time</span>
-              </div>
-              <button
-                onClick={() => setDrawerOpen(false)}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-              >
-                Done
-              </button>
-            </div>
-          </div>
-
-          {/* Click outside to close - invisible overlay above drawer */}
-          <div 
-            className="absolute top-0 left-0 right-0 pointer-events-auto"
-            style={{ height: `calc(100vh - ${drawerHeight}px)` }}
-            onClick={() => setDrawerOpen(false)}
-          />
-        </div>
-      )}
+      {/* Smooth Drawer */}
+      <SmoothDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onOpen={() => setDrawerOpen(true)}
+        title="Data Cleaning Options"
+        subtitle="Drag the handle above to resize • Click outside to close"
+        minHeight={250}
+        maxHeight={600}
+        initialHeight={400}
+        showPeek={csvData !== null && !drawerOpen}
+      >
+        <CleaningControls 
+          options={cleanOptions}
+          setOptions={setCleanOptions}
+          processing={processing}
+        />
+      </SmoothDrawer>
 
       <div className="mt-8 text-center text-sm text-green-600">
         <p className="font-medium">Free version limited to 10,000 rows.
