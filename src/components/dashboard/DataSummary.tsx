@@ -134,54 +134,54 @@ export default function DataSummary({ data }: DataSummaryProps) {
         </div>
         
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-neutral-300">
+            <thead className="bg-gray-200">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-1 text-center font-bold text-xs text-gray-500 tracking-wider">
                   Column Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-1 text-center font-bold text-xs text-gray-500 tracking-wider">
                   Type
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-1 text-center font-bold text-xs text-gray-500 tracking-wider">
                   Count
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-1 text-center font-bold text-xs text-gray-500 tracking-wider">
                   Unique
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-1 text-center font-bold text-xs text-gray-500 tracking-wider">
                   Missing
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-1 text-center font-bold text-xs text-gray-500 tracking-wider">
                   Statistics
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white divide-y divide-gray-300">
               {statistics.map((stat, index) => (
-                <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-100'}>
+                  <td className="px-6 py-1 whitespace-nowrap text-sm font-medium text-gray-900">
                     {stat.column}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-1 whitespace-nowrap text-sm text-gray-500">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                       stat.type === 'numeric' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
                     }`}>
                       {stat.type === 'numeric' ? '🔢 Numeric' : '📝 Text'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-1 whitespace-nowrap text-sm text-gray-500">
                     {stat.count}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-1 whitespace-nowrap text-sm text-gray-500">
                     {stat.unique}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-1 whitespace-nowrap text-sm text-gray-500">
                     <span className={stat.missing > 0 ? 'text-red-600 font-semibold' : 'text-green-600'}>
                       {stat.missing}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                  <td className="px-6 py-1 text-sm text-gray-500">
                     {stat.type === 'numeric' ? (
                       <div className="space-y-1">
                         <div>Min: {stat.min.toFixed(2)}, Max: {stat.max.toFixed(2)}</div>
