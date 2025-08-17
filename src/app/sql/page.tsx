@@ -206,72 +206,67 @@ export default function SQLPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-3">
       <div className="max-w-6xl mx-auto">
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-white rounded-lg shadow border overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6">
-            <h1 className="text-3xl font-bold mb-2">🗄️ SQL Query Generator</h1>
-            <p className="text-blue-100">
-              Generate CREATE TABLE and INSERT statements from your data
-            </p>
+          <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4">
+            <h1 className="text-xl font-semibold mb-1 leading-tight">🗄️ SQL Query Generator</h1>
+            <p className="text-emerald-100 text-xs">Generate CREATE TABLE & INSERT statements from your data</p>
           </div>
 
           {/* Configuration Section */}
-          <div className="p-6 bg-gray-50 border-b">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">⚙️ Configuration</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="p-4 bg-gray-50 border-b">
+            <h3 className="text-sm font-semibold text-gray-800 mb-3">⚙️ Configuration</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {/* Table Name */}
-              <div className='bg-neutral-100 rounded-lg p-4 space-y-3 shadow-md'>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className='bg-neutral-100 rounded-md p-3 space-y-2 border'>
+                <label className="block text-[11px] font-medium text-gray-700">
                   Table Name:
                 </label>
                 <input
                   type="text"
                   value={tableName}
                   onChange={(e) => setTableName(e.target.value.replace(/[^a-zA-Z0-9_]/g, '_'))}
-                  className="w-full px-3 py-2 border border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-2 py-1.5 border border-neutral-400 rounded text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   placeholder="Enter table name"
                 />
-                <span
-                className='text-green-800 text-xs animate-pulse' 
-                >Insert appropiate table name</span>
+                <span className='text-green-700 text-[10px]'>Prefer snake_case</span>
               </div>
 
               {/* Include Options */}
-              <div className="bg-neutral-100 rounded-lg p-4 space-y-3 shadow-md">
-                <label className="block text-sm font-medium text-gray-700">
+              <div className="bg-neutral-100 rounded-md p-3 space-y-2 border">
+                <label className="block text-[11px] font-medium text-gray-700">
                   Include:
                 </label>
-                <label className="flex items-center">
+                <label className="flex items-center text-[11px]">
                   <input
                     type="checkbox"
                     checked={includeCreateTable}
                     onChange={(e) => setIncludeCreateTable(e.target.checked)}
-                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    className="mr-2 h-3.5 w-3.5 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
                   />
-                  <span className="text-sm text-gray-700">CREATE TABLE</span>
+                  <span className="text-gray-700">CREATE TABLE</span>
                 </label>
-                <label className="flex items-center">
+                <label className="flex items-center text-[11px]">
                   <input
                     type="checkbox"
                     checked={includeInserts}
                     onChange={(e) => setIncludeInserts(e.target.checked)}
-                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    className="mr-2 h-3.5 w-3.5 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
                   />
-                  <span className="text-sm text-gray-700">INSERT statements</span>
+                  <span className="text-gray-700">INSERT rows</span>
                 </label>
               </div>
 
               {/* Column Types Preview */}
-              <div className='bg-neutral-100 rounded-lg p-4 shadow-md'>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className='bg-neutral-100 rounded-md p-3 border'>
+                <label className="block text-[11px] font-medium text-gray-700 mb-1">
                   Detected Types:
                 </label>
-                <div className="max-h-20 overflow-y-auto text-xs space-y-1">
+                <div className="max-h-24 overflow-y-auto text-[10px] space-y-1 pr-1">
                   {detectColumnTypes().slice(0, 100).map((col, index) => (
-                    <div key={index} className="bg-white p-1 rounded border text-gray-600">
+                    <div key={index} className="bg-white px-1 py-0.5 rounded border text-gray-600">
                       <span className="font-medium">{col.name}:</span> {col.type}
                     </div>
                   ))}
@@ -286,42 +281,38 @@ export default function SQLPage() {
           </div>
 
           {/* Data Summary */}
-          <div className="p-6 bg-neutral-100 border-b">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">Data Summary</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div className="bg-white p-3 rounded border">
-                <span className="font-medium text-gray-600">Rows:</span>
-                <span className="ml-2 text-blue-600 font-bold">{currentData.data.length}</span>
+          <div className="p-3 bg-neutral-100 border-b">
+            <h3 className="text-sm font-semibold text-gray-800 mb-2">Data Summary</h3>
+            <div className="grid grid-cols-3 gap-2 text-[11px]">
+              <div className="bg-white px-2 py-1.5 rounded border flex items-center justify-between">
+                <span className="text-gray-600">Rows</span>
+                <span className="text-emerald-600 font-semibold">{currentData.data.length}</span>
               </div>
-              <div className="bg-white p-3 rounded border">
-                <span className="font-medium text-gray-600">Columns:</span>
-                <span className="ml-2 text-blue-600 font-bold">{currentData.headers.length}</span>
+              <div className="bg-white px-2 py-1.5 rounded border flex items-center justify-between">
+                <span className="text-gray-600">Columns</span>
+                <span className="text-emerald-600 font-semibold">{currentData.headers.length}</span>
               </div>
-              <div className="bg-white p-3 rounded border">
-                <span className="font-medium text-gray-600">Table:</span>
-                <span className="ml-2 text-blue-600 font-bold">{tableName}</span>
+              <div className="bg-white px-2 py-1.5 rounded border flex items-center justify-between">
+                <span className="text-gray-600">Table</span>
+                <span className="text-emerald-600 font-semibold truncate max-w-[90px]" title={tableName}>{tableName}</span>
               </div>
             </div>
           </div>
 
           {/* SQL Query Box */}
-          <div className="p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Generated SQL Query</h3>
-              <div className="flex gap-2">
+          <div className="p-4">
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-sm font-semibold text-gray-800">Generated SQL</h3>
+              <div className="flex gap-1.5">
                 <button
                   onClick={handleCopy}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                    copied 
-                      ? 'bg-green-500 text-white' 
-                      : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                  }`}
+                  className={`px-3 py-1.5 rounded-md font-medium text-[11px] transition-colors border ${copied ? 'bg-emerald-500 border-emerald-600 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-700 border-gray-300'}`}
                 >
-                  {copied ? '✓ Copied!' : '📋 Copy'}
+                  {copied ? '✓ Copied' : '📋 Copy'}
                 </button>
                 <button
                   onClick={handleDownload}
-                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-all"
+                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md font-medium text-[11px]"
                 >
                   💾 Download
                 </button>
@@ -331,20 +322,19 @@ export default function SQLPage() {
             <textarea
               value={sqlQuery}
               readOnly
-              className="w-full h-96 p-4 border border-gray-300 rounded-lg font-mono text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-80 p-3 border border-gray-300 rounded font-mono text-[11px] bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               placeholder="SQL query will appear here..."
             />
           </div>
 
           {/* Instructions */}
-          <div className="p-6 bg-gray-50 border-t">
-            <h4 className="font-semibold text-gray-800 mb-2">How to use:</h4>
-            <ul className="text-sm text-gray-600 space-y-1">
-              <li>• The query includes CREATE TABLE and INSERT statements</li>
-              <li>• Column names are automatically sanitized for SQL compatibility</li>
-              <li>• All columns are created as VARCHAR(255) - modify as needed</li>
-              <li>• Copy the query or download as .sql file</li>
-              <li>• Run the query in your database management tool</li>
+          <div className="p-4 bg-gray-50 border-t">
+            <h4 className="font-semibold text-gray-800 mb-2 text-sm">Notes</h4>
+            <ul className="text-[11px] text-gray-600 space-y-1 list-disc pl-4">
+              <li>Types inferred (BOOLEAN, DATE, INT/BIGINT, DECIMAL, VARCHAR sized, TEXT)</li>
+              <li>Column names sanitized; original header added as COMMENT</li>
+              <li>NULL when value can't be parsed for inferred type</li>
+              <li>Copy or download for quick DB import</li>
             </ul>
           </div>
         </div>
