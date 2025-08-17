@@ -16,6 +16,25 @@ export default function SQLPage() {
   // Get the current data (reordered data takes priority)
   const currentData = reorderedData || csvData;
 
+  // Format column names: remove special chars (not replacing with extra underscores) and
+  // if original contains '%' append '_percentage'. Preserve original letter casing for base.
+  const formatColumnName = (original: string) => {
+    if (!original) return 'col';
+    const hadPercent = original.includes('%');
+    let base = original.replace(/%/g, '');
+    // Remove all non-alphanumeric/underscore characters (do not insert underscores)
+    base = base.normalize('NFKD').replace(/[^a-zA-Z0-9_]/g, '');
+    // Collapse multiple underscores if any pre-existed
+    base = base.replace(/_{2,}/g, '_').replace(/^_+|_+$/g, '');
+    if (!base) base = 'col';
+    if (hadPercent && !/percentage$/i.test(base)) {
+      base += '%';
+    }
+    // If starts with digit, prefix
+    if (/^[0-9]/.test(base)) base = 'col_' + base;
+    return base;
+  };
+
   // Detect column types
   const detectColumnTypes = () => {
     if (!currentData) return [];
@@ -119,15 +138,15 @@ export default function SQLPage() {
       sql += `CREATE TABLE ${tableName} (\n`;
       sql += `  id INT PRIMARY KEY AUTO_INCREMENT,\n`;
       sql += columnTypes.map(col => {
-        const columnName = col.name.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase();
-        return `  ${columnName} ${col.type} COMMENT '${col.name}'`;
+        const columnName = formatColumnName(col.name);
+        return `  ${columnName} ${col.type} COMMENT '${col.name.replace(/'/g, "''")}'`;
       }).join(',\n');
       sql += `\n);\n\n`;
     }
 
     if (includeInserts) {
       sql += `-- Insert data statements (${currentData.data.length} rows)\n`;
-      const columnNames = columnTypes.map(col => col.name.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase()).join(', ');
+  const columnNames = columnTypes.map(col => formatColumnName(col.name)).join(', ');
       
       currentData.data.forEach((row, index) => {
         const values = row.map((cell, colIndex) => {
