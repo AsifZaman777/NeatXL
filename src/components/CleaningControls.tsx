@@ -77,14 +77,14 @@ export default function CleaningControls({
     icon?: string;
     disabled?: boolean;
   }) => (
-    <div className="flex items-center p-3 bg-white rounded-lg border border-green-200 hover:border-green-300 transition-all group">
+    <div className="flex items-center p-3 bg-white rounded-lg border border-green-200 hover:border-neutral-800 transition-all group">
       <input
         id={id}
         name={id}
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className="h-5 w-5 text-green-600 focus:ring-green-500 border-green-300 rounded"
+        className="h-5 w-5 text-green-600 focus:ring-green-500 border-neutral-800 rounded"
         disabled={processing || disabled}
       />
       <label htmlFor={id} className="ml-3 block text-sm font-medium text-green-800 flex-1">
@@ -117,7 +117,7 @@ export default function CleaningControls({
       
       {/* Basic Data Quality Section */}
       <div className="mb-8">
-        <h4 className="text-lg font-semibold text-green-700 mb-4 border-b border-green-300 pb-2">
+        <h4 className="text-lg font-semibold text-green-700 mb-4 border-b border-neutral-800 pb-2">
           📊 Basic Data Quality
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -158,7 +158,7 @@ export default function CleaningControls({
 
       {/* Text & String Cleaning Section */}
       <div className="mb-8">
-        <h4 className="text-lg font-semibold text-green-700 mb-4 border-b border-green-300 pb-2">
+        <h4 className="text-lg font-semibold text-green-700 mb-4 border-b border-neutral-800 pb-2">
           ✂️ Text & String Cleaning
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -231,7 +231,7 @@ export default function CleaningControls({
 
       {/* Data Format Standardization Section */}
       <div className="mb-8">
-        <h4 className="text-lg font-semibold text-green-700 mb-4 border-b border-green-300 pb-2">
+        <h4 className="text-lg font-semibold text-green-700 mb-4 border-b border-neutral-800 pb-2">
           📋 Data Format Standardization
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -288,7 +288,7 @@ export default function CleaningControls({
 
       {/* Advanced Text Processing Section */}
       <div className="mb-8">
-        <h4 className="text-lg font-semibold text-green-700 mb-4 border-b border-green-300 pb-2">
+        <h4 className="text-lg font-semibold text-green-700 mb-4 border-b border-neutral-800 pb-2">
           🧠 Advanced Text Processing
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -345,7 +345,7 @@ export default function CleaningControls({
 
       {/* Data Transformation Section */}
       <div className="mb-8">
-        <h4 className="text-lg font-semibold text-green-700 mb-4 border-b border-green-300 pb-2">
+        <h4 className="text-lg font-semibold text-green-700 mb-4 border-b border-neutral-800 pb-2">
           🔄 Data Transformation
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -386,7 +386,7 @@ export default function CleaningControls({
 
       {/* Fill Empty Cells Section */}
       <div className="mb-6">
-        <h4 className="text-lg font-semibold text-green-700 mb-4 border-b border-green-300 pb-2">
+        <h4 className="text-lg font-semibold text-green-700 mb-4 border-b border-neutral-800 pb-2">
           📝 Fill Empty Cells
         </h4>
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
@@ -403,7 +403,7 @@ export default function CleaningControls({
             value={options.fillEmptyWith}
             onChange={(e) => setOptions({...options, fillEmptyWith: e.target.value})}
             placeholder="Default value (e.g., N/A, 0, Unknown)"
-            className="px-3 py-2 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="px-3 py-2 border border-neutral-800 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
             disabled={processing}
           />
         </div>

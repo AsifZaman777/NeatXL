@@ -113,13 +113,13 @@ export default function SmoothDrawer({
             transition={{
               type: 'spring',
               damping: 30,
-              stiffness: 300,
+              stiffness: 100,
               duration: 0.3,
             }}
             className="absolute bottom-0 left-0 right-0 pointer-events-auto"
             style={{ height: isOpen ? `${drawerHeight}px` : '80px' }}
           >
-            <div className="h-full bg-white border-t-2 border-green-500 shadow-2xl rounded-t-xl overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-green-200 to-green-400 border-t-2 border-green-500 shadow-2xl rounded-t-xl overflow-hidden">
               {/* Resize Handle */}
               <div
                 className={`w-full h-6 bg-gradient-to-b from-green-400 to-green-600 hover:from-green-600 hover:to-green-700 flex items-center justify-center group transition-all duration-200 ${
@@ -149,7 +149,7 @@ export default function SmoothDrawer({
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.2, type: 'spring', stiffness: 400, damping: 25 }}
-                    className="bg-green-100 p-2 rounded-lg"
+                    className="bg-green-200  p-2 rounded-lg"
                   >
                     <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
