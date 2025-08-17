@@ -440,22 +440,77 @@ export default function Home() {
 
   return (
     <div className="w-full 2xl:max-w-6xl 2xl:mx-auto border-2 border-green-500 rounded-lg bg-gradient-to-br from-green-50 to-emerald-100 p-4">
-      <div className="text-center mb-8">
-        <div className="flex justify-center items-center mb-4">
-          <h1 className="text-5xl font-bold text-green-800 mb-3">
-            <span className="text-emerald-600">Neat</span><span className="text-green-700">XL</span>
-          </h1>
+      {/* Conditional Header - Only show when no data is uploaded */}
+      {!csvData && (
+        <div className="text-center mb-8">
+          <div className="flex justify-center items-center mb-4">
+            <h1 className="text-5xl font-bold text-green-800 mb-3">
+              <span className="text-emerald-600">Neat</span><span className="text-green-700">XL</span>
+            </h1>
+          </div>
+          <p className="text-green-700 text-lg font-medium">
+            Advanced Data Processing & Analytics Tool
+          </p>
+          <p className="text-xl text-green-700 max-w-2xl mx-auto font-medium mb-4">
+            Clean, transform, and analyze your CSV files in seconds
+          </p>
+          
+          {/* Marquee Features */}
+          <div className="w-full overflow-hidden bg-gradient-to-r from-green-600 to-emerald-700 rounded-lg border border-green-200 py-3">
+            <div className="animate-marquee whitespace-nowrap flex items-center text-green-100 text-sm font-medium">
+              <span className="mx-8 flex items-center">
+                📄 <span className="ml-2">Export to CSV</span>
+              </span>
+              <span className="mx-8 flex items-center">
+                🗂️ <span className="ml-2">Export to JSON</span>
+              </span>
+              <span className="mx-8 flex items-center">
+                🗄️ <span className="ml-2">Generate SQL Queries</span>
+              </span>
+              <span className="mx-8 flex items-center">
+                📊 <span className="ml-2">Interactive Dashboards</span>
+              </span>
+              <span className="mx-8 flex items-center">
+                🧹 <span className="ml-2">Smart Data Cleaning</span>
+              </span>
+              <span className="mx-8 flex items-center">
+                ⚡ <span className="ml-2">Lightning Fast Processing</span>
+              </span>
+              <span className="mx-8 flex items-center">
+                📈 <span className="ml-2">Data Analytics</span>
+              </span>
+              <span className="mx-8 flex items-center">
+                🔄 <span className="ml-2">Real-time Preview</span>
+              </span>
+              {/* Duplicate for seamless loop */}
+              <span className="mx-8 flex items-center">
+                📄 <span className="ml-2">Export to CSV</span>
+              </span>
+              <span className="mx-8 flex items-center">
+                🗂️ <span className="ml-2">Export to JSON</span>
+              </span>
+              <span className="mx-8 flex items-center">
+                🗄️ <span className="ml-2">Generate SQL Queries</span>
+              </span>
+              <span className="mx-8 flex items-center">
+                📊 <span className="ml-2">Interactive Dashboards</span>
+              </span>
+              <span className="mx-8 flex items-center">
+                🧹 <span className="ml-2">Smart Data Cleaning</span>
+              </span>
+              <span className="mx-8 flex items-center">
+                ⚡ <span className="ml-2">Lightning Fast Processing</span>
+              </span>
+              <span className="mx-8 flex items-center">
+                📈 <span className="ml-2">Data Analytics</span>
+              </span>
+              <span className="mx-8 flex items-center">
+                🔄 <span className="ml-2">Real-time Preview</span>
+              </span>
+            </div>
+          </div>
         </div>
-        <p className="text-green-700 text-lg font-medium">
-          Advanced Data Processing & Analytics Tool
-        </p>
-        <p className="text-green-600 text-sm mt-2">
-          Export to CSV/JSON • Generate SQL Queries • Interactive Dashboards • Smart Data Cleaning
-        </p>
-        <p className="text-xl text-green-700 max-w-2xl mx-auto font-medium">
-          Clean, transform, and analyze your CSV files in seconds
-        </p>
-      </div>
+      )}
 
       {/* Dashboard Banner - Show when data is available */}
       {/* {csvData && (
