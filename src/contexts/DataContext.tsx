@@ -8,6 +8,8 @@ interface DataContextType {
   setCsvData: (data: CSVData | null) => void;
   reorderedData: CSVData | null;
   setReorderedData: (data: CSVData | null) => void;
+  savedData: CSVData | null; // user-saved updated version
+  setSavedData: (data: CSVData | null) => void;
   clearAllData: () => void;
   hasData: boolean;
 }
@@ -21,6 +23,7 @@ interface DataProviderProps {
 export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   const [csvData, setCsvDataState] = useState<CSVData | null>(null);
   const [reorderedData, setReorderedDataState] = useState<CSVData | null>(null);
+  const [savedData, setSavedDataState] = useState<CSVData | null>(null);
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -67,8 +70,10 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   const clearAllData = () => {
     setCsvDataState(null);
     setReorderedDataState(null);
+    setSavedDataState(null);
   localStorage.removeItem('neatxl-csv-data');
   localStorage.removeItem('neatxl-reordered-data');
+  localStorage.removeItem('neatxl-saved-data');
   };
 
   const hasData = csvData !== null;
@@ -78,6 +83,12 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     setCsvData,
     reorderedData,
     setReorderedData,
+    savedData,
+    setSavedData: (data: CSVData | null) => {
+      setSavedDataState(data);
+      if (data) localStorage.setItem('neatxl-saved-data', JSON.stringify(data));
+      else localStorage.removeItem('neatxl-saved-data');
+    },
     clearAllData,
     hasData,
   };

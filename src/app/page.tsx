@@ -10,9 +10,11 @@ import { CSVData } from "../types/types";
 import { useData } from "../contexts/DataContext";
 
 export default function Home() {
-  const { csvData, setCsvData, reorderedData, setReorderedData } = useData();
+  const { csvData, setCsvData, reorderedData, setReorderedData, savedData, setSavedData } = useData();
   const [processing, setProcessing] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  // Toast for save action
+  const [showSavedToast, setShowSavedToast] = useState(false);
   const [cleanOptions, setCleanOptions] = useState({
     // Basic cleaning
     removeDuplicates: true,
@@ -653,6 +655,21 @@ export default function Home() {
                   >
                     🔄 Upload New File
                   </button>
+                  {(cleanedCsvData || currentData) && (
+                    <button
+                      onClick={() => {
+                        const base = cleanedCsvData || currentData!;
+                        setSavedData({ headers: [...base.headers], data: base.data.map(r => [...r]) });
+                        setShowSavedToast(true);
+                        // Auto hide after 3s
+                        setTimeout(() => setShowSavedToast(false), 3000);
+                      }}
+                      title="Save current cleaned / reordered version"
+                      className="px-4 py-2 text-sm text-emerald-700 hover:text-white font-medium bg-emerald-100 hover:bg-emerald-600 rounded-lg border border-emerald-300 transition-colors"
+                    >
+                      💾 Save Updated Version
+                    </button>
+                  )}
                 </div>
               </div>
               {(cleanedCsvData || currentData) && (
@@ -748,6 +765,21 @@ export default function Home() {
           processing={processing}
         />
       </SmoothDrawer>
+
+      {showSavedToast && (
+        <div className="fixed top-10 right-4 z-50">
+          <div className="flex items-center gap-2 px-3 py-2  text-white text-sm rounded shadow-lg bg-gradient-to-l from-green-600 to-emerald-800 border border-emerald-400">
+            <span className="font-medium">✅ Updated version saved</span>
+            <button
+              onClick={() => setShowSavedToast(false)}
+              className="text-white/80 hover:text-white focus:outline-none"
+              aria-label="Close notification"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

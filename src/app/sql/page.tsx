@@ -5,7 +5,8 @@ import { useData } from '../../contexts/DataContext';
 import { useRouter } from 'next/navigation';
 
 export default function SQLPage() {
-  const { csvData, reorderedData } = useData();
+  const { csvData, reorderedData, savedData } = useData();
+  const [dataVersion, setDataVersion] = useState<'original' | 'updated'>('original');
   const router = useRouter();
   const [sqlQuery, setSqlQuery] = useState('');
   const [tableName, setTableName] = useState('neatxl_data');
@@ -13,8 +14,9 @@ export default function SQLPage() {
   const [includeCreateTable, setIncludeCreateTable] = useState(true);
   const [includeInserts, setIncludeInserts] = useState(true);
 
-  // Get the current data (reordered data takes priority)
-  const currentData = reorderedData || csvData;
+  // Determine dataset based on selection
+  const baseData = reorderedData || csvData;
+  const currentData = dataVersion === 'updated' ? (savedData || baseData) : baseData;
 
   // Format column names: remove special chars (not replacing with extra underscores) and
   // if original contains '%' append '_percentage'. Preserve original letter casing for base.
@@ -253,6 +255,32 @@ export default function SQLPage() {
                 <span className='text-green-700 text-[10px]'>Prefer snake_case</span>
               </div>
 
+              {/* Data Version Selection */}
+              <div className='bg-neutral-100 rounded-md p-3 space-y-2 border'>
+                <label className="block text-[11px] font-medium text-gray-700">Data Version:</label>
+                <div className="flex flex-col gap-1 text-[11px]">
+                  <label className="inline-flex items-center gap-1">
+                    <input
+                      type="radio"
+                      className="h-3.5 w-3.5 text-emerald-600 focus:ring-emerald-500"
+                      checked={dataVersion === 'original'}
+                      onChange={() => setDataVersion('original')}
+                    />
+                    <span>Original / Reordered</span>
+                  </label>
+                  <label className="inline-flex items-center gap-1">
+                    <input
+                      type="radio"
+                      className="h-3.5 w-3.5 text-emerald-600 focus:ring-emerald-500"
+                      checked={dataVersion === 'updated'}
+                      onChange={() => setDataVersion('updated')}
+                      disabled={!savedData}
+                    />
+                    <span className={savedData ? '' : 'text-gray-400'}>Saved Updated Version{!savedData && ' (none saved)'}</span>
+                  </label>
+                </div>
+              </div>
+
               {/* Include Options */}
               <div className="bg-neutral-100 rounded-md p-3 space-y-2 border">
                 <label className="block text-[11px] font-medium text-gray-700">
@@ -352,7 +380,7 @@ export default function SQLPage() {
             <ul className="text-[11px] text-gray-600 space-y-1 list-disc pl-4">
               <li>Types inferred (BOOLEAN, DATE, INT/BIGINT, DECIMAL, VARCHAR sized, TEXT)</li>
               <li>Column names sanitized; original header added as COMMENT</li>
-              <li>NULL when value can't be parsed for inferred type</li>
+              <li>NULL when value can not be parsed for inferred type</li>
               <li>Copy or download for quick DB import</li>
             </ul>
           </div>
