@@ -10,32 +10,156 @@ export default function SQLPage() {
   const [sqlQuery, setSqlQuery] = useState('');
   const [tableName, setTableName] = useState('neatxl_data');
   const [copied, setCopied] = useState(false);
+  const [includeCreateTable, setIncludeCreateTable] = useState(true);
+  const [includeInserts, setIncludeInserts] = useState(true);
 
   // Get the current data (reordered data takes priority)
   const currentData = reorderedData || csvData;
+
+  // Detect column types
+  const detectColumnTypes = () => {
+    if (!currentData) return [];
+    
+    return currentData.headers.map(header => {
+      const columnIndex = currentData.headers.indexOf(header);
+      const columnData = currentData.data.map(row => row[columnIndex]).filter(value => value !== '' && value != null);
+      
+      // Check if column is numeric
+      const numericData = columnData.map(value => parseFloat(String(value))).filter(value => !isNaN(value));
+      const isNumeric = numericData.length > columnData.length * 0.7; // More than 70% numeric
+      
+      // Check if column contains dates
+      const dateData = columnData.filter(value => {
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$|^\d{2}\/\d{2}\/\d{4}$|^\d{2}-\d{2}-\d{4}$/;
+        return dateRegex.test(String(value)) || !isNaN(Date.parse(String(value)));
+      });
+      const isDate = dateData.length > columnData.length * 0.7;
+      
+      // Check if column contains booleans
+      const booleanData = columnData.filter(value => {
+        const val = String(value).toLowerCase();
+        return ['true', 'false', '1', '0', 'yes', 'no', 'y', 'n'].includes(val);
+      });
+      const isBoolean = booleanData.length > columnData.length * 0.7;
+      
+      // Check if column contains emails
+      const emailData = columnData.filter(value => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(String(value));
+      });
+      const isEmail = emailData.length > columnData.length * 0.7;
+      
+      // Determine max length for VARCHAR
+      const maxLength = Math.max(...columnData.map(value => String(value).length));
+      
+      // Determine SQL data type
+      let sqlType = 'VARCHAR(255)';
+      if (isBoolean) {
+        sqlType = 'BOOLEAN';
+      } else if (isDate) {
+        sqlType = 'DATE';
+      } else if (isEmail) {
+        sqlType = 'VARCHAR(100)';
+      } else if (isNumeric) {
+        // Check if integers or decimals
+        const hasDecimals = numericData.some(val => val % 1 !== 0);
+        if (hasDecimals) {
+          sqlType = 'DECIMAL(10,2)';
+        } else {
+          // Check range for INT vs BIGINT
+          const maxVal = Math.max(...numericData);
+          const minVal = Math.min(...numericData);
+          if (maxVal > 2147483647 || minVal < -2147483648) {
+            sqlType = 'BIGINT';
+          } else {
+            sqlType = 'INT';
+          }
+        }
+      } else {
+        // Text data - optimize VARCHAR length
+        if (maxLength <= 50) {
+          sqlType = `VARCHAR(${Math.max(50, maxLength + 10)})`;
+        } else if (maxLength <= 255) {
+          sqlType = `VARCHAR(${maxLength + 50})`;
+        } else {
+          sqlType = 'TEXT';
+        }
+      }
+      
+      return {
+        name: header,
+        type: sqlType,
+        isNumeric,
+        isDate,
+        isBoolean,
+        isEmail,
+        maxLength
+      };
+    });
+  };
 
   useEffect(() => {
     if (currentData) {
       generateSQL();
     }
-  }, [currentData, tableName]);
+  }, [currentData, tableName, includeCreateTable, includeInserts]);
 
   const generateSQL = () => {
-    if (!currentData) return;
+    if (!currentData) {
+      setSqlQuery('-- No data available. Please upload a CSV file first.');
+      return;
+    }
 
-    // Generate CREATE TABLE statement
-    const createTable = `CREATE TABLE ${tableName} (\n  id INT PRIMARY KEY AUTO_INCREMENT,\n${currentData.headers.map(header => 
-      `  ${header.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase()} VARCHAR(255)`
-    ).join(',\n')}\n);\n\n`;
+    const columnTypes = detectColumnTypes();
+    let sql = '';
 
-    // Generate INSERT statements
-    const insertStatements = currentData.data.map(row => {
-      const values = row.map(cell => `'${String(cell).replace(/'/g, "''")}'`).join(', ');
-      return `INSERT INTO ${tableName} (${currentData.headers.map(h => h.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase()).join(', ')}) VALUES (${values});`;
-    }).join('\n');
+    // Generate Normal SQL with intelligent column types
+    if (includeCreateTable) {
+      sql += `-- Create table statement with optimized data types\n`;
+      sql += `CREATE TABLE ${tableName} (\n`;
+      sql += `  id INT PRIMARY KEY AUTO_INCREMENT,\n`;
+      sql += columnTypes.map(col => {
+        const columnName = col.name.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase();
+        return `  ${columnName} ${col.type} COMMENT '${col.name}'`;
+      }).join(',\n');
+      sql += `\n);\n\n`;
+    }
 
-    const fullSQL = createTable + insertStatements;
-    setSqlQuery(fullSQL);
+    if (includeInserts) {
+      sql += `-- Insert data statements (${currentData.data.length} rows)\n`;
+      const columnNames = columnTypes.map(col => col.name.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase()).join(', ');
+      
+      currentData.data.forEach((row, index) => {
+        const values = row.map((cell, colIndex) => {
+          const col = columnTypes[colIndex];
+          const cellStr = String(cell || '');
+          
+          if (col.type.includes('INT') || col.type.includes('DECIMAL')) {
+            const numValue = parseFloat(cellStr);
+            return isNaN(numValue) ? 'NULL' : numValue;
+          } else if (col.type === 'BOOLEAN') {
+            const val = cellStr.toLowerCase();
+            if (['true', '1', 'yes', 'y'].includes(val)) return 'TRUE';
+            if (['false', '0', 'no', 'n'].includes(val)) return 'FALSE';
+            return 'NULL';
+          } else if (col.type === 'DATE') {
+            const date = new Date(cellStr);
+            return !isNaN(date.getTime()) ? `'${date.toISOString().split('T')[0]}'` : 'NULL';
+          } else {
+            return `'${cellStr.replace(/'/g, "''")}'`;
+          }
+        }).join(', ');
+        
+        sql += `INSERT INTO ${tableName} (${columnNames}) VALUES (${values});\n`;
+        
+        // Add a comment every 100 rows for better readability
+        if ((index + 1) % 100 === 0) {
+          sql += `-- Inserted ${index + 1} rows\n\n`;
+        }
+      });
+    }
+
+    setSqlQuery(sql);
   };
 
   const handleCopy = async () => {
@@ -93,25 +217,76 @@ export default function SQLPage() {
             </p>
           </div>
 
-          {/* Table Name Input */}
+          {/* Configuration Section */}
           <div className="p-6 bg-gray-50 border-b">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Table Name:
-            </label>
-            <input
-              type="text"
-              value={tableName}
-              onChange={(e) => setTableName(e.target.value.replace(/[^a-zA-Z0-9_]/g, '_'))}
-              className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter table name"
-            />
-            <p className="text-sm text-gray-500 mt-1">
-              Only letters, numbers, and underscores are allowed
-            </p>
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">⚙️ Configuration</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Table Name */}
+              <div className='bg-neutral-100 rounded-lg p-4 space-y-3 shadow-md'>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Table Name:
+                </label>
+                <input
+                  type="text"
+                  value={tableName}
+                  onChange={(e) => setTableName(e.target.value.replace(/[^a-zA-Z0-9_]/g, '_'))}
+                  className="w-full px-3 py-2 border border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter table name"
+                />
+                <span
+                className='text-green-800 text-xs animate-pulse' 
+                >Insert appropiate table name</span>
+              </div>
+
+              {/* Include Options */}
+              <div className="bg-neutral-100 rounded-lg p-4 space-y-3 shadow-md">
+                <label className="block text-sm font-medium text-gray-700">
+                  Include:
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={includeCreateTable}
+                    onChange={(e) => setIncludeCreateTable(e.target.checked)}
+                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <span className="text-sm text-gray-700">CREATE TABLE</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={includeInserts}
+                    onChange={(e) => setIncludeInserts(e.target.checked)}
+                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <span className="text-sm text-gray-700">INSERT statements</span>
+                </label>
+              </div>
+
+              {/* Column Types Preview */}
+              <div className='bg-neutral-100 rounded-lg p-4 shadow-md'>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Detected Types:
+                </label>
+                <div className="max-h-20 overflow-y-auto text-xs space-y-1">
+                  {detectColumnTypes().slice(0, 100).map((col, index) => (
+                    <div key={index} className="bg-white p-1 rounded border text-gray-600">
+                      <span className="font-medium">{col.name}:</span> {col.type}
+                    </div>
+                  ))}
+                  {currentData.headers.length > 100 && (
+                    <div className="text-gray-500 text-center">
+                      +{currentData.headers.length - 100} more columns
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Data Summary */}
-          <div className="p-6 bg-blue-50 border-b">
+          <div className="p-6 bg-neutral-100 border-b">
             <h3 className="text-lg font-semibold text-gray-800 mb-2">Data Summary</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
               <div className="bg-white p-3 rounded border">
