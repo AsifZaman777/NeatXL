@@ -195,7 +195,7 @@ export default function SmoothDrawer({
                 className="absolute bottom-0 left-0 right-0 border-t border-gray-200 p-3 bg-gradient-to-r from-gray-50 to-green-50 flex justify-center items-center"
               >
                 <div className="text-sm text-gray-600 text-center flex items-center space-x-2">
-                  <span>© 2025 NeatSheet - Simple CSV cleaning tool</span>
+                  <span>© 2025 NeatXL - Simple CSV cleaning tool</span>
                   <span className="text-gray-400">•</span>
                   <span className="text-blue-600 hover:text-blue-800 transition-colors">asifzaman3123@gmail.com</span>
                   <span className="text-gray-400">•</span>

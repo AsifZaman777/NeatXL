@@ -43,7 +43,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
       
       <footer className="py-6 border-t border-gray-200 text-center text-gray-500 text-sm">
         <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
-          <span>© {new Date().getFullYear()} NeatSheet - Simple CSV cleaning tool</span>
+          <span>© {new Date().getFullYear()} NeatXL - Simple CSV cleaning tool</span>
           <span>•</span>
           <a
             href="mailto:asifzaman3123@gmail.com"

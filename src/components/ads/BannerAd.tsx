@@ -17,7 +17,7 @@ export default function BannerAd() {
     <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
       <div className="container mx-auto px-4 py-2 flex flex-col sm:flex-row items-center justify-between gap-2">
         <div className="text-center sm:text-left">
-          <span className="font-medium">✨ Try NeatSheet Pro:</span> 
+          <span className="font-medium">✨ Try NeatXL Pro:</span> 
           <span className="ml-1">Unlimited processing and no ads!</span>
         </div>
         <button 

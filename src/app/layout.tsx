@@ -9,8 +9,8 @@ import LayoutWrapper from '../components/LayoutWrapper';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'NeatSheet - Clean Your CSV Files',
-  description: 'Upload, clean, and download your CSV files with ease',
+  title: 'NeatXL - Advanced Data Processing & Analytics',
+  description: 'Upload, clean, visualize, and export your data. Generate SQL queries, create dashboards, and export to CSV/JSON formats.',
 };
 
 export default function RootLayout({

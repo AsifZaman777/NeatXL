@@ -386,7 +386,7 @@ export default function Home() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'neatsheet-cleaned-data.csv');
+  link.setAttribute('download', 'neatxl-cleaned-data.csv');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -398,7 +398,7 @@ export default function Home() {
       const worksheet = XLSX.utils.aoa_to_sheet([cleanedCsvData.headers, ...cleanedCsvData.data]);
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-      XLSX.writeFile(workbook, 'neatsheet-cleaned-data.xlsx');
+  XLSX.writeFile(workbook, 'neatxl-cleaned-data.xlsx');
     });
   };
 
@@ -416,13 +416,11 @@ export default function Home() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'neatsheet-cleaned-data.json');
+    link.setAttribute('download', 'neatxl-cleaned-data.json');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
-
-  // Statistics calculation
+  };  // Statistics calculation
   const getStatistics = () => {
     if (!cleanedCsvData) return null;
     const totalRows = cleanedCsvData.data.length;
@@ -445,9 +443,15 @@ export default function Home() {
       <div className="text-center mb-8">
         <div className="flex justify-center items-center mb-4">
           <h1 className="text-5xl font-bold text-green-800 mb-3">
-            <span className="text-emerald-600">Neat</span><span className="text-green-700">Sheet</span>
+            <span className="text-emerald-600">Neat</span><span className="text-green-700">XL</span>
           </h1>
         </div>
+        <p className="text-green-700 text-lg font-medium">
+          Advanced Data Processing & Analytics Tool
+        </p>
+        <p className="text-green-600 text-sm mt-2">
+          Export to CSV/JSON • Generate SQL Queries • Interactive Dashboards • Smart Data Cleaning
+        </p>
         <p className="text-xl text-green-700 max-w-2xl mx-auto font-medium">
           Clean, transform, and analyze your CSV files in seconds
         </p>
@@ -488,7 +492,10 @@ export default function Home() {
                 <h2 className="text-2xl font-bold text-green-800">📊 Data Spreadsheet</h2>
                 <div className="flex gap-2">
                   <button 
-                    onClick={() => setDrawerOpen(true)}
+                     onClick={() => {
+                      setCsvData(null);
+                      setReorderedData(null);
+                    }}
                     className="px-4 py-2 text-sm text-purple-600 hover:text-purple-800 font-medium bg-purple-50 hover:bg-purple-100 rounded-lg border border-purple-300 transition-all"
                   >
                     🧹 Clean Data
@@ -533,7 +540,7 @@ export default function Home() {
               )}
             </div>
 
-            <div className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 flex justify-end gap-4">
+            <div className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 flex justify-end gap-4 flex-wrap">
               <button
                 onClick={handleDownloadCSV}
                 disabled={processing}

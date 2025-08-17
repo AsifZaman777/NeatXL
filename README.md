@@ -1,6 +1,25 @@
-# 📊 NeatSheet - CSV Data Cleaning Tool
+# 📊 NeatXL - Advanced Data Processing & Analytics Tool
 
-## 🚀 Features
+## 🚀 Key Features
+
+### � Export Capabilities
+- **CSV Export**: Export cleaned data to CSV format with custom delimiters
+- **JSON Export**: Convert data to structured JSON format for APIs and applications
+- **SQL Query Generation**: Automatically generate SQL INSERT/CREATE statements from your data
+
+### 🧹 Data Cleaning & Formatting
+- **Automatic Cleaning**: Remove duplicates, handle missing values, and fix formatting issues
+- **Smart Data Detection**: Automatic detection of data types (numbers, dates, text, emails)
+- **Column Operations**: Rename, delete, reorder, and merge columns with ease
+- **Row Management**: Sort, filter, delete, and manipulate rows with advanced controls
+- **Data Validation**: Custom validation rules and error detection
+- **Text Processing**: Trim whitespace, standardize case, remove special characters
+
+### 📊 Data Dashboarding
+- **Interactive Charts**: Generate bar charts, line graphs, pie charts, and scatter plots
+- **Real-time Visualization**: Live data analysis with dynamic chart updates
+- **Data Insights**: Statistical summaries including mean, median, and distribution analysis
+- **Visual Analytics**: Data profiling with detailed column analysis and quality metrics
 
 ### 📁 File Upload & Processing
 - **Multi-format Support**: Upload CSV, Excel (.xlsx, .xls), and JSON files
@@ -8,14 +27,6 @@
 - **Large File Handling**: Process files up to 10MB efficiently with optimized parsing
 - **Real-time Preview**: Instant data preview with pagination and responsive table view
 - **Batch Processing**: Handle multiple files simultaneously
-
-### 🧹 Data Cleaning & Transformation
-- **Automatic Cleaning**: Remove duplicates, handle missing values, and fix formatting issues
-- **Smart Data Detection**: Automatic detection of data types (numbers, dates, text, emails)
-- **Column Operations**: Rename, delete, reorder, and merge columns with ease
-- **Row Management**: Sort, filter, delete, and manipulate rows with advanced controls
-- **Data Validation**: Custom validation rules and error detection
-- **Text Processing**: Trim whitespace, standardize case, remove special characters
 
 ### 🎯 Interactive Drag & Drop
 - **Column Reordering**: Drag and drop columns to rearrange data structure

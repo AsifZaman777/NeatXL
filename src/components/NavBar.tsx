@@ -17,7 +17,7 @@ export default function NavBar() {
               className="text-3xl font-bold text-green-800 hover:text-green-900 transition-all transform hover:scale-105 flex items-center bg-transparent border-none cursor-pointer"
             >
               <span className="text-emerald-600">📊 Neat</span>
-              <span className="text-green-700">Sheet</span>
+            <span className="text-green-700">XL</span>
             </button>
           </div>
 
@@ -38,10 +38,19 @@ export default function NavBar() {
               )}
             </button>
             <button
+              onClick={() => router.push("/sql")}
+              className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-blue-600 hover:text-blue-700 hover:bg-blue-100 border-2 border-transparent hover:border-blue-300 bg-transparent cursor-pointer relative"
+            >
+              🗄️ Generate SQL
+              {hasData && (
+                <span className="absolute -top-1 -right-1 h-3 w-3 bg-blue-500 rounded-full"></span>
+              )}
+            </button>
+            <button
               onClick={() => router.push("/pricing")}
               className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-green-600 hover:text-green-700 hover:bg-green-100 border-2 border-transparent hover:border-green-300 bg-transparent cursor-pointer"
             >
-              💰 Pricing
+                💰 NeatXL
             </button>
 
             <button

@@ -1,7 +1,7 @@
 export default function ContactPage() {
 	const email = 'asifzaman3123@gmail.com';
-	const subject = encodeURIComponent('NeatSheet Contact');
-	const body = encodeURIComponent('Hi NeatSheet team,\n\nI would like to...');
+	const subject = encodeURIComponent('NeatXL Contact');
+	const body = encodeURIComponent('Hi NeatXL team,\n\nI would like to...');
 
 	return (
 		<div className="max-w-3xl mx-auto w-full p-6">
@@ -24,7 +24,7 @@ export default function ContactPage() {
 					<h2 className="text-lg font-bold text-green-800 mb-2">Support</h2>
 					<ul className="text-green-700 space-y-2">
 						<li>• Docs: Coming soon</li>
-						<li>• Twitter: @neatsheet (placeholder)</li>
+						<li>• Twitter: @neatxl (placeholder)</li>
 						<li>• Address: Remote-first</li>
 					</ul>
 				</div>

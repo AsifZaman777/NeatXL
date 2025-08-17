@@ -24,15 +24,15 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
 
   // Load data from localStorage on mount
   useEffect(() => {
-    const savedCsvData = localStorage.getItem('neatsheet-csv-data');
-    const savedReorderedData = localStorage.getItem('neatsheet-reordered-data');
+  const savedCsvData = localStorage.getItem('neatxl-csv-data');
+  const savedReorderedData = localStorage.getItem('neatxl-reordered-data');
     
     if (savedCsvData) {
       try {
         setCsvDataState(JSON.parse(savedCsvData));
       } catch (error) {
         console.error('Error loading CSV data from localStorage:', error);
-        localStorage.removeItem('neatsheet-csv-data');
+  localStorage.removeItem('neatxl-csv-data');
       }
     }
     
@@ -41,7 +41,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         setReorderedDataState(JSON.parse(savedReorderedData));
       } catch (error) {
         console.error('Error loading reordered data from localStorage:', error);
-        localStorage.removeItem('neatsheet-reordered-data');
+  localStorage.removeItem('neatxl-reordered-data');
       }
     }
   }, []);
@@ -49,26 +49,26 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   const setCsvData = (data: CSVData | null) => {
     setCsvDataState(data);
     if (data) {
-      localStorage.setItem('neatsheet-csv-data', JSON.stringify(data));
+  localStorage.setItem('neatxl-csv-data', JSON.stringify(data));
     } else {
-      localStorage.removeItem('neatsheet-csv-data');
+  localStorage.removeItem('neatxl-csv-data');
     }
   };
 
   const setReorderedData = (data: CSVData | null) => {
     setReorderedDataState(data);
     if (data) {
-      localStorage.setItem('neatsheet-reordered-data', JSON.stringify(data));
+  localStorage.setItem('neatxl-reordered-data', JSON.stringify(data));
     } else {
-      localStorage.removeItem('neatsheet-reordered-data');
+  localStorage.removeItem('neatxl-reordered-data');
     }
   };
 
   const clearAllData = () => {
     setCsvDataState(null);
     setReorderedDataState(null);
-    localStorage.removeItem('neatsheet-csv-data');
-    localStorage.removeItem('neatsheet-reordered-data');
+  localStorage.removeItem('neatxl-csv-data');
+  localStorage.removeItem('neatxl-reordered-data');
   };
 
   const hasData = csvData !== null;
