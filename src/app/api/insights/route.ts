@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Proxy route to bypass browser CORS when calling the external LLM insights endpoint
-// Accepts multipart/form-data with a 'file' field (CSV) and forwards it.
-
-export const runtime = 'edge'; // fast streaming capable; switch to 'nodejs' if libs needed
+export const runtime = 'edge';
 
 const TARGET_URL = 'http://159.132.10.51:8000/insights/file';
 
