@@ -34,6 +34,7 @@ export default function AIAssistantPage() {
   const [summary, setSummary] = useState<string>('');
   const [sections, setSections] = useState<ParsedSection[]>([]);
   const [autoTriggered, setAutoTriggered] = useState(false);
+  const [rawInsightsValue, setRawInsightsValue] = useState('');
 
   // Serialize current dataset into CSV text for sending
   const buildCSVString = (): string => {
@@ -57,9 +58,11 @@ export default function AIAssistantPage() {
     try {
       const json: InsightsResponse = JSON.parse(text);
       if (Array.isArray(json.insights)) {
+        setRawInsightsValue(json.insights.join('\n'));
         setInsights(json.insights.map((t, i) => ({ id: i, text: t })));
         return;
       } else if (typeof json.insights === 'string') {
+        setRawInsightsValue(json.insights);
         parseMarkdownInsights(json.insights);
         return;
       } else if (json.summary) {
@@ -199,6 +202,7 @@ export default function AIAssistantPage() {
             <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded">Auto-run: {autoTriggered ? 'yes' : 'no'}</span>
           </div>
           <div className="flex gap-2">
+            {/* Export buttons enabled if any insight-related content is present */}
             <button
               onClick={fetchInsights}
               disabled={loading}
@@ -218,7 +222,7 @@ export default function AIAssistantPage() {
                 link.click();
                 document.body.removeChild(link);
               }}
-              disabled={!insights.length && !summary}
+              disabled={!(rawInsightsValue || sections.length || insights.length || summary)}
               className="px-4 py-2 rounded-lg text-sm font-semibold bg-white border border-purple-300 text-purple-700 hover:bg-purple-50 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               📄 Export MD
@@ -227,7 +231,7 @@ export default function AIAssistantPage() {
               onClick={() => {
                 navigator.clipboard.writeText(generateMarkdown());
               }}
-              disabled={!insights.length && !summary}
+              disabled={!(rawInsightsValue || sections.length || insights.length || summary)}
               className="px-4 py-2 rounded-lg text-sm font-semibold bg-white border border-purple-300 text-purple-700 hover:bg-purple-50 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               📋 Copy
@@ -236,7 +240,7 @@ export default function AIAssistantPage() {
         </div>
 
         {/* Content */}
-        <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="mt-6 grid grid-cols-1 lg:grid-cols-1 gap-6">
           <div className="lg:col-span-2 space-y-6">
             {error && (
               <div className="p-4 bg-red-50 border border-red-300 text-red-700 text-sm rounded">
@@ -264,10 +268,10 @@ export default function AIAssistantPage() {
             {sections.length > 0 ? (
               <div className="space-y-6">
                 {sections.map(section => (
-                  <div key={section.id} className="bg-white border rounded-xl shadow-sm p-5">
+                  <div key={section.id} className="relative group rounded-xl shadow-sm p-5 overflow-hidden border border-purple-200 bg-gradient-to-br from-white via-purple-50 to-indigo-50">
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{background:'radial-gradient(circle at 30% 20%, rgba(168,85,247,0.15), transparent 60%)'}} />
                     <div className="flex items-center justify-between mb-3">
-                      <h2 className="text-sm font-bold text-purple-700 tracking-wide flex items-center gap-2">
-                        <span className="inline-block w-2 h-2 rounded-full bg-purple-500" />
+                      <h2 className="text-sm font-bold text-purple-700 tracking-wide flex items-center gap-2 drop-shadow-sm">
                         {section.heading}
                       </h2>
                       <button
@@ -276,13 +280,13 @@ export default function AIAssistantPage() {
                           ...section.paragraphs,
                           ...section.bullets.map(b => '- ' + b)
                         ].join('\n'))}
-                        className="text-[10px] px-2 py-1 rounded bg-purple-50 text-purple-600 hover:bg-purple-100 border border-purple-200"
+                        className="text-[10px] px-2 py-1 rounded bg-white/70 backdrop-blur border border-purple-300 text-purple-700 hover:bg-purple-50 shadow-sm"
                       >Copy</button>
                     </div>
                     {section.paragraphs.length > 0 && (
                       <div className="space-y-2 mb-3">
                         {section.paragraphs.map((p,i) => (
-                          <p key={i} className="text-xs text-gray-700 leading-relaxed">{p}</p>
+                          <p key={i} className="text-xs text-gray-700 leading-relaxed [&_strong]:text-purple-700" dangerouslySetInnerHTML={{__html: decorateText(p)}} />
                         ))}
                       </div>
                     )}
@@ -290,7 +294,7 @@ export default function AIAssistantPage() {
                       <ul className="space-y-1">
                         {section.bullets.map((b,i) => (
                           <li key={i} className="text-xs text-gray-700 flex items-start gap-2">
-                            <span className="mt-1 inline-block w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                            <span className="mt-1 inline-block w-1 h-1 rounded-full bg-gradient-to-r from-indigo-400 to-fuchsia-500 shadow" />
                             <span className="flex-1">{renderBullet(b, section.heading)}</span>
                           </li>
                         ))}
@@ -332,12 +336,12 @@ export default function AIAssistantPage() {
 
           {/* Side Panel */}
           <div className="space-y-6">
-            <div className="bg-white rounded-xl border shadow p-5">
+            {/* <div className="bg-white rounded-xl border shadow p-5">
               <h3 className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">📄 Raw Response</h3>
               <div className="h-64 overflow-y-auto text-[11px] bg-gray-50 border rounded p-3 font-mono whitespace-pre-wrap">
                 {rawResponse || (loading ? 'Waiting for response...' : 'No response yet.')}
               </div>
-            </div>
+            </div> */}
 
             <div className="bg-white rounded-xl border shadow p-5 text-xs text-gray-600 space-y-2">
               <h3 className="text-sm font-semibold text-gray-800 mb-2">About</h3>
@@ -356,6 +360,7 @@ export default function AIAssistantPage() {
   );
 
   function generateMarkdown() {
+    if (rawInsightsValue) return rawInsightsValue + '\n';
     let md = `# NeatXL AI Insights\n\n`;
     if (sections.length) {
       sections.forEach(sec => {
@@ -390,10 +395,34 @@ export default function AIAssistantPage() {
           <div className="h-1.5 w-full rounded bg-purple-100 overflow-hidden">
             <div className="h-full bg-gradient-to-r from-purple-500 to-indigo-500" style={{ width: value + '%' }} />
           </div>
-          <p className="text-[10px] text-gray-500 leading-snug">{text}</p>
+          <p className="text-[10px] text-gray-500 leading-snug" dangerouslySetInnerHTML={{__html: mdDecorate(text)}} />
         </div>
       );
     }
-    return text;
+    const highlighted = mdDecorate(text);
+    return <span className="[&_em]:text-fuchsia-600" dangerouslySetInnerHTML={{__html: highlighted}} />;
+  }
+  function decorateText(p: string) {
+    return mdDecorate(p);
+  }
+
+  // Convert simple inline markdown (**bold**, *italic*, `code`) then highlight domain tokens & percentages
+  function mdDecorate(src: string) {
+    if (!src) return '';
+    // Basic HTML escape first
+    let out = src
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    // Code spans
+    out = out.replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 rounded bg-indigo-100 text-indigo-700 text-[10px] font-mono">$1</code>');
+    // Bold (**text**)
+    out = out.replace(/\*\*([^*]+)\*\*/g, '<strong class="text-purple-700 font-semibold">$1</strong>');
+    // Italic *text*
+    out = out.replace(/(^|[^*])\*([^*]+)\*(?!\*)/g, ($, pre, body) => `${pre}<em class="text-fuchsia-600 italic">${body}</em>`);
+    // Percentages & domain tokens
+    out = out.replace(/(\b\d{1,3}(?:\.\d+)?%)/g, '<span class="font-semibold text-indigo-600">$1</span>')
+             .replace(/\b(DSE|LBSL)\b/g, '<span class="font-semibold text-purple-700">$1</span>');
+    return out;
   }
 }
