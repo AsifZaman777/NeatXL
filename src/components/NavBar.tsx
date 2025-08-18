@@ -47,6 +47,15 @@ export default function NavBar() {
               )}
             </button>
             <button
+              onClick={() => router.push("/ai")}
+              className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-purple-600 hover:text-purple-700 hover:bg-purple-100 border-2 border-transparent hover:border-purple-300 bg-transparent cursor-pointer relative"
+            >
+              🤖 AI Assistant
+              {hasData && (
+                <span className="absolute -top-1 -right-1 h-3 w-3 bg-purple-500 rounded-full"></span>
+              )}
+            </button>
+            <button
               onClick={() => router.push("/pricing")}
               className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-green-600 hover:text-green-700 hover:bg-green-100 border-2 border-transparent hover:border-green-300 bg-transparent cursor-pointer"
             >
