@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Head from 'next/head';
 import { CSVData } from '../../types/types';
 import CSVUploader from '../../components/CSVUploader';
 import ChartVisualization from '../../components/dashboard/ChartVisualization';

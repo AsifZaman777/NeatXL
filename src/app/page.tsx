@@ -8,6 +8,7 @@ import CleaningControls from "../components/CleaningControls";
 import SmoothDrawer from "../components/SmoothDrawer";
 import { CSVData } from "../types/types";
 import { useData } from "../contexts/DataContext";
+import Head from "next/head";
 
 export default function Home() {
   const { csvData, setCsvData, reorderedData, setReorderedData, savedData, setSavedData } = useData();
@@ -515,22 +516,46 @@ export default function Home() {
   const statistics = getStatistics();
 
   return (
-    <div className="w-full 2xl:max-w-6xl 2xl:mx-auto border-2 border-green-500 rounded-lg bg-gradient-to-br from-green-50 to-emerald-100 p-4">
-      {/* Conditional Header - Only show when no data is uploaded */}
-      {!csvData && (
-        <div className="text-center mb-8">
-          <div className="flex justify-center items-center mb-4">
-            <h1 className="text-5xl font-bold text-green-800 mb-3">
-              <span className="text-emerald-600">Neat</span>
-              <span className="text-green-700">XL</span>
-            </h1>
-          </div>
-          <p className="text-green-700 text-lg font-medium">
-            Advanced Data Processing & Analytics Tool
-          </p>
-          <p className="text-xl text-green-700 max-w-2xl mx-auto font-medium mb-4">
-            Clean, transform, and analyze your CSV files in seconds
-          </p>
+    <>
+      <Head>
+        <title>NeatXL - Free Online CSV & Excel Data Cleaning Tool</title>
+        <meta name="description" content="Clean, organize, and transform your CSV and Excel files online for free. Remove duplicates, handle missing values, standardize formats, and export clean data instantly." />
+        <meta name="keywords" content="CSV cleaner, Excel data cleaning, remove duplicates, data preprocessing, clean CSV online, data transformation, free data tools" />
+        <link rel="canonical" href="https://neatxl.com" />
+      </Head>
+      
+      <div className="w-full 2xl:max-w-6xl 2xl:mx-auto border-2 border-green-500 rounded-lg bg-gradient-to-br from-green-50 to-emerald-100 p-4">
+        {/* SEO-Optimized Header */}
+        {!csvData && (
+          <header className="text-center mb-8">
+            <div className="flex justify-center items-center mb-4">
+              <h1 className="text-5xl font-bold text-green-800 mb-3">
+                <span className="text-emerald-600">Neat</span>
+                <span className="text-green-700">XL</span>
+              </h1>
+            </div>
+            <h2 className="text-green-700 text-2xl font-bold mb-2">
+              Free Online CSV & Excel Data Cleaning Tool
+            </h2>
+            <p className="text-xl text-green-700 max-w-3xl mx-auto font-medium mb-4">
+              Clean, transform, and analyze your CSV and Excel files in seconds. Remove duplicates, handle missing values, standardize formats, and export clean data instantly.
+            </p>
+            
+            {/* Key Features for SEO */}
+            <div className="grid md:grid-cols-3 gap-4 mb-6 text-sm">
+              <div className="bg-white/70 rounded-lg p-3 border border-green-200">
+                <h3 className="font-semibold text-green-800 mb-1">🧹 Data Cleaning</h3>
+                <p className="text-green-600">Remove duplicates, empty rows, and standardize formats</p>
+              </div>
+              <div className="bg-white/70 rounded-lg p-3 border border-green-200">
+                <h3 className="font-semibold text-green-800 mb-1">📊 Data Analysis</h3>
+                <p className="text-green-600">Generate insights and statistics from your data</p>
+              </div>
+              <div className="bg-white/70 rounded-lg p-3 border border-green-200">
+                <h3 className="font-semibold text-green-800 mb-1">💾 Export Options</h3>
+                <p className="text-green-600">Download as CSV, Excel, or JSON formats</p>
+              </div>
+            </div>
 
           {/* Marquee Features */}
           <div className="w-full overflow-hidden bg-gradient-to-r from-green-600 to-emerald-700 rounded-lg border border-green-200 py-3">
@@ -586,8 +611,8 @@ export default function Home() {
               </span>
             </div>
           </div>
-        </div>
-      )}
+          </header>
+        )}
 
       {/* Dashboard Banner - Show when data is available */}
       {/* {csvData && (
@@ -780,6 +805,7 @@ export default function Home() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }

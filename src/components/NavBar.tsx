@@ -50,7 +50,21 @@ export default function NavBar() {
               onClick={() => router.push("/pricing")}
               className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-green-600 hover:text-green-700 hover:bg-green-100 border-2 border-transparent hover:border-green-300 bg-transparent cursor-pointer"
             >
-                💰 NeatXL
+                💰 Pricing
+            </button>
+
+            <button
+              onClick={() => router.push("/about")}
+              className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-blue-600 hover:text-blue-700 hover:bg-blue-100 border-2 border-transparent hover:border-blue-300 bg-transparent cursor-pointer"
+            >
+              ℹ️ About
+            </button>
+
+            <button
+              onClick={() => router.push("/faq")}
+              className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-purple-600 hover:text-purple-700 hover:bg-purple-100 border-2 border-transparent hover:border-purple-300 bg-transparent cursor-pointer"
+            >
+              ❓ FAQ
             </button>
 
             <button

@@ -1,3 +1,11 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Contact NeatXL - Get Help with Data Cleaning',
+  description: 'Need help with data cleaning? Contact the NeatXL team for support, feature requests, or business inquiries. We respond within 1-2 business days.',
+  keywords: ['contact NeatXL', 'data cleaning support', 'CSV help', 'customer service'],
+};
+
 export default function ContactPage() {
 	const email = 'asifzaman3123@gmail.com';
 	const subject = encodeURIComponent('NeatXL Contact');

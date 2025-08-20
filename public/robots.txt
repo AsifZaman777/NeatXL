@@ -1,0 +1,13 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /private/
+
+# Host
+Host: https://neatxl.com
+
+# Sitemaps
+Sitemap: https://neatxl.com/sitemap.xml
