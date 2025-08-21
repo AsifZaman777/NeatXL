@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useData } from "../contexts/DataContext";
+import Image from "next/image";
 
 export default function NavBar() {
   const router = useRouter();
@@ -14,10 +15,19 @@ export default function NavBar() {
           <div className="flex items-center">
             <button
               onClick={() => router.push("/")}
-              className="text-3xl font-bold text-green-800 hover:text-green-900 transition-all transform hover:scale-105 flex items-center bg-transparent border-none cursor-pointer"
+              className="flex items-center space-x-2 hover:opacity-80 transition-all transform hover:scale-105 bg-transparent border-none cursor-pointer"
             >
-              <span className="text-emerald-600">📊 Neat</span>
-            <span className="text-green-700">XL</span>
+              <Image
+                src="/assets/ad-images/neatxl-logo.png"
+                alt="NeatXL Logo"
+                width={40}
+                height={40}
+                className="rounded-lg"
+              />
+              <span className="text-2xl font-bold text-green-800 hover:text-green-900">
+                <span className="text-emerald-600">Neat</span>
+                <span className="text-green-700">XL</span>
+              </span>
             </button>
           </div>
 
