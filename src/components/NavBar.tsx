@@ -14,7 +14,7 @@ export default function NavBar() {
           <div className="flex items-center">
             <button
               onClick={() => router.push("/")}
-              className="text-3xl font-bold text-green-800 hover:text-green-900 transition-all transform hover:scale-105 flex items-center bg-transparent border-none cursor-pointer"
+              className="text-xl font-bold text-green-800 hover:text-green-900 transition-all transform hover:scale-105 flex items-center bg-transparent border-none cursor-pointer"
             >
               <span className="text-emerald-600">📊 Neat</span>
             <span className="text-green-700">XL</span>
@@ -24,7 +24,7 @@ export default function NavBar() {
           <nav className="hidden sm:flex sm:items-center space-x-4">
             <button
               onClick={() => router.push("/")}
-              className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-green-600 hover:text-green-700 hover:bg-green-100 border-2 border-transparent hover:border-green-300 bg-transparent cursor-pointer"
+              className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-green-600 hover:text-green-700 hover:bg-green-100 border-2 border-blue-200 hover:border-green-300 bg-transparent cursor-pointer"
             >
               🏠 Home
             </button>
@@ -47,11 +47,21 @@ export default function NavBar() {
               )}
             </button>
             <button
+              onClick={() => router.push("/analytics")}
+              className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-orange-600 hover:text-orange-700 hover:bg-orange-100 border-2 border-transparent hover:border-orange-300 bg-transparent cursor-pointer relative"
+            >
+              🧠 Advanced Analytics
+              {hasData && (
+                <span className="absolute -top-1 -right-1 h-3 w-3 bg-orange-500 rounded-full"></span>
+              )}
+            </button>
+           
+            {/* <button
               onClick={() => router.push("/pricing")}
               className="px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 text-green-600 hover:text-green-700 hover:bg-green-100 border-2 border-transparent hover:border-green-300 bg-transparent cursor-pointer"
             >
                 💰 Pricing
-            </button>
+            </button> */}
 
             <button
               onClick={() => router.push("/about")}
