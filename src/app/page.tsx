@@ -528,19 +528,16 @@ export default function Home() {
         {/* SEO-Optimized Header */}
         {!csvData && (
           <header className="text-center mb-8">
-            <div className="flex justify-center items-center mb-4">
-              <h1 className="text-5xl font-bold text-green-800 mb-3">
+            <div className="flex justify-center items-center mb-2">
+              <h1 className="text-5xl font-bold text-green-800 mb-1">
                 <span className="text-emerald-600">Neat</span>
                 <span className="text-green-700">XL</span>
               </h1>
             </div>
-            <h2 className="text-green-700 text-2xl font-bold mb-2">
+            <span className="text-green-700 text-lg font-bold mb-2">
               Free Online CSV & Excel Data Cleaning Tool
-            </h2>
-            <p className="text-xl text-green-700 max-w-3xl mx-auto font-medium mb-4">
-              Clean, transform, and analyze your CSV and Excel files in seconds. Remove duplicates, handle missing values, standardize formats, and export clean data instantly.
-            </p>
-            
+            </span>
+          
             {/* Key Features for SEO */}
             <div className="grid md:grid-cols-3 gap-4 mb-6 text-sm">
               <div className="bg-white/70 rounded-lg p-3 border border-green-200">
