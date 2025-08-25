@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useData } from "../contexts/DataContext";
 import Image from "next/image";
+import logo from '../../public/assets/ad-images/neatxl-logo.png';
 
 export default function NavBar() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function NavBar() {
               className="flex items-center space-x-2 hover:opacity-80 transition-all transform hover:scale-105 bg-transparent border-none cursor-pointer"
             >
               <Image
-                src="/assets/ad-images/neatxl-logo.png"
+                src={logo}
                 alt="NeatXL Logo"
                 width={40}
                 height={40}
