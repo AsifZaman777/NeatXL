@@ -5,7 +5,7 @@ import './globals.css';
 import { AdProvider } from '../components/ads/AdContext';
 import { DataProvider } from '../contexts/DataContext';
 import LayoutWrapper from '../components/LayoutWrapper';
-import Analytics from '../components/Analytics';
+import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({ subsets: ['latin'] });
 
