@@ -153,6 +153,22 @@ export default function RootLayout({
         <meta name="application-name" content="NeatXL" />
         <link rel="icon" href="/public/favicon-v2.ico" sizes="any" />
         <link rel="manifest" href="/manifest.json" />
+        {/* SEO: Logo for Google Images and social cards */}
+        <meta property="og:image" content="https://neatxl.com/logo.png" />
+        <meta property="og:image:alt" content="NeatXL Logo - Free Online CSV & Excel Data Cleaning Tool" />
+        <meta name="twitter:image" content="https://neatxl.com/logo.png" />
+        <meta name="twitter:image:alt" content="NeatXL Logo - Free Online CSV & Excel Data Cleaning Tool" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "url": "https://neatxl.com",
+              "logo": "https://neatxl.com/logo.png"
+            })
+          }}
+        />
       </head>
       <body className={`${inter.className} bg-gray-50`}>
         <Analytics />

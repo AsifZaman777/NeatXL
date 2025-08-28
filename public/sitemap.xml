@@ -6,5 +6,15 @@
 <url><loc>https://neatxl.com/faq</loc><lastmod>2025-08-28T10:19:01.073Z</lastmod><changefreq>weekly</changefreq><priority>1</priority></url>
 <url><loc>https://neatxl.com/dashboard</loc><lastmod>2025-08-28T10:19:01.073Z</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
 <url><loc>https://neatxl.com/contact</loc><lastmod>2025-08-28T10:19:01.073Z</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
-<url><loc>https://neatxl.com</loc><lastmod>2025-08-28T10:19:01.073Z</lastmod><changefreq>weekly</changefreq><priority>1</priority></url>
+<url>
+  <loc>https://neatxl.com</loc>
+  <lastmod>2025-08-28T10:19:01.073Z</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>1</priority>
+  <image:image>
+    <image:loc>https://neatxl.com/logo.png</image:loc>
+    <image:caption>NeatXL Logo - Free Online CSV & Excel Data Cleaning Tool</image:caption>
+    <image:title>NeatXL Logo</image:title>
+  </image:image>
+</url>
 </urlset>
