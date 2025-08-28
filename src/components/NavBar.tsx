@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useData } from "../contexts/DataContext";
 import Image from "next/image";
-import logo from '../../public/assets/ad-images/neatxl-logo.png';
+import logo from '../../public/logo.png';
 
 export default function NavBar() {
   const router = useRouter();
